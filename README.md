@@ -1,21 +1,8 @@
 # Apex
 
-**TODO: Add description**
+Apex is a parser of UDP telemetry from racing simulators (currently only
+[F1 2019 by Codemasters](https://www.codemasters.com/game/f1-2019/)).
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `apex` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:apex, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/apex](https://hexdocs.pm/apex).
-
+Run `mix run`, which will output Elixir structs representing car telemetry
+data from a single UDP packet, whose contents are stored in
+`test/sample_data/car_telemetry_packet`.
