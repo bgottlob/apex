@@ -14,7 +14,8 @@ defmodule Apex.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Apex, ["/home/bgottlob/projects/apex/test/sample_data/car_telemetry_packet"]},
+      #mod: {Apex, [capture: "test/sample_data/spain_lap"]},
+      mod: {Apex, [read: "test/sample_data/spain_lap"]},
       extra_applications: [:logger]
     ]
   end

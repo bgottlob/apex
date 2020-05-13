@@ -39,7 +39,7 @@ defmodule F1.PacketHeader do
       session_time: session_time,
       frame_identifier: frame_identifier,
       player_car_index: player_car_index
-    } |> IO.inspect
+    }# |> IO.inspect
   end
 end
 
