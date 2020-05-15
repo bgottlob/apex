@@ -1,30 +1,21 @@
-defmodule Apex.MixProject do
+defmodule ApexUmbrella.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :apex,
+      apps_path: "apps",
       version: "0.1.0",
-      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      #mod: {Apex, [capture: "test/sample_data/spain_lap"]},
-      mod: {Apex, [read: "test/sample_data/spain_lap"]},
-      extra_applications: [:logger]
-    ]
-  end
-
-  # Run "mix help deps" to learn about dependencies.
+  # Dependencies listed here are available only for this
+  # project and cannot be accessed from applications inside
+  # the apps folder.
+  #
+  # Run "mix help deps" for examples and options.
   defp deps do
-    [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-    ]
+    []
   end
 end
