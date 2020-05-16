@@ -42,7 +42,7 @@ defmodule ApexDash.Mixfile do
       {:phoenix_live_reload, "~> 1.2.2", only: :dev},
       {:gettext, "~> 0.18.0"},
       {:plug_cowboy, "~> 2.2.1"},
-      #{:apex, in_umbrella: true},
+      {:apex, in_umbrella: true},
       {:phoenix_live_view, "~> 0.12.1"},
       {:jason, "~> 1.2.1"}
     ]

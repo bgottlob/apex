@@ -13,11 +13,7 @@ defmodule Apex.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      #mod: {Apex, [capture: "test/sample_data/spain_lap"]},
-      mod: {Apex, [read: "apps/apex/test/sample_data/spain_lap"]},
-      extra_applications: [:logger]
-    ]
+    []
   end
 
   # Run "mix help deps" to learn about dependencies.

@@ -11,17 +11,35 @@ defmodule ApexDashWeb.DashboardLive do
 
   def render(assigns) do
     ~L"""
-    RPM: <%= @rpm %>
+    Gear: <%= @gear %>
+    <br>
+    RPM: <%= @rpm %> rpm
+    <br>
+    Speed: <%= @speed %> km/h
     """
   end
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: :timer.send_interval(300, self(), :update)
-    rpm = :rand.uniform(9000)
-    {:ok, assign(socket, :rpm, rpm)}
+    [{apex_client, nil}] = Registry.lookup(Registry.Apex, "apex_client")
+    Apex.Client.subscribe(apex_client)
+    {:ok,
+      socket
+      |> assign(:rpm, "Loading...")
+      |> assign(:speed, "Loading...")
+      |> assign(:gear, "Loading...")
+    }
   end
 
   def handle_info(:update, socket) do
     {:noreply, assign(socket, :rpm, :rand.uniform(9000))}
+  end
+
+  def handle_info({:update, telemetry}, socket) do
+    {:noreply,
+      socket
+      |> assign(:rpm, telemetry.engine_rpm)
+      |> assign(:speed, telemetry.speed)
+      |> assign(:gear, telemetry.gear)
+    }
   end
 end
