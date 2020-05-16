@@ -5,6 +5,8 @@
 # is restricted to this project.
 use Mix.Config
 
+config :phoenix, :json_library, Jason
+
 # General application configuration
 config :apex_dash,
   namespace: ApexDash
@@ -14,8 +16,8 @@ config :apex_dash, ApexDashWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "ZiAsbWn2nzouu36Ta3JR8jmCqz9Gycztbe8ppVYKRAFs+feb0nA/IizGPvlFBWZ5",
   render_errors: [view: ApexDashWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ApexDash.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub_server: ApexDash.PubSub,
+  live_view: [signing_salt: "kCzxEq4RWot7tflnE6589Ty//HhJdfa4"]
 
 # Configures Elixir's Logger
 config :logger, :console,

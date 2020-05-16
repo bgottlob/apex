@@ -1,5 +1,6 @@
 defmodule ApexDashWeb.Router do
   use ApexDashWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,6 +18,7 @@ defmodule ApexDashWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    live "/live", DashboardLive
   end
 
   # Other scopes may use custom stacks.

@@ -12,6 +12,7 @@ defmodule ApexDash.Application do
       supervisor(ApexDashWeb.Endpoint, []),
       # Start your own worker by calling: ApexDash.Worker.start_link(arg1, arg2, arg3)
       # worker(ApexDash.Worker, [arg1, arg2, arg3]),
+      {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

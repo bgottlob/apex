@@ -4,8 +4,13 @@
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/web/endpoint.ex":
 import {Socket} from "phoenix"
+import LiveSocket from "phoenix_live_view"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+liveSocket.connect()
+
+//let socket = new Socket("/socket", {params: {token: window.userToken}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -51,6 +56,7 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 // Finally, pass the token on connect as below. Or remove it
 // from connect if you don't care about authentication.
 
+/*
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
@@ -60,3 +66,4 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 export default socket
+*/
