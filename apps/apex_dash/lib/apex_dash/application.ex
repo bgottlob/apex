@@ -15,6 +15,10 @@ defmodule ApexDash.Application do
       {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]}
     ]
 
+    # Create the Apex client and add it to the process registry
+    Registry.start_link(keys: :unique, name: Registry.Apex)
+    {:ok, _} = Apex.Client.start(20777)
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ApexDash.Supervisor]
