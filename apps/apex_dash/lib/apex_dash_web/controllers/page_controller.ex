@@ -11,11 +11,11 @@ defmodule ApexDashWeb.DashboardLive do
 
   def render(assigns) do
     ~L"""
-    Gear: <%= @gear %>
+    <h1>Gear: <%= @gear %></h1>
     <br>
-    RPM: <%= @rpm %> rpm
+    <h2>Speed: <%= @speed %> km/h</h2>
     <br>
-    Speed: <%= @speed %> km/h
+    <h2>RPM: <%= @rpm %> rpm</h2>
     """
   end
 
