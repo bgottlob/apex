@@ -44,7 +44,8 @@ defmodule ApexDash.Mixfile do
       {:plug_cowboy, "~> 2.2.1"},
       {:apex, in_umbrella: true},
       {:phoenix_live_view, "~> 0.12.1"},
-      {:jason, "~> 1.2.1"}
+      {:jason, "~> 1.2.1"},
+      {:gen_stage, "~> 1.0.0"}
     ]
   end
 end
