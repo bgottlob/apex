@@ -53,6 +53,6 @@ defmodule F1.CarTelemetryData do
       engine_temperature: engine_temperature,
       tyres_pressure: float32_tuple(tyres_pressure, 4),
       surface_type: uint8_tuple(surface_type, 4)
-    } |> IO.inspect
+    }
   end
 end

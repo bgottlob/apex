@@ -1,41 +1,24 @@
-defmodule Apex.Client do
-  def start(port) do
-    Task.start(fn ->
-      Apex.Client.UDPListener.start(port)
-      Registry.start_link(keys: :unique, name: Registry.Apex)
-      Registry.register(Registry.Apex, "apex_client", nil)
-      Apex.Client.loop([])
-    end)
+defmodule Apex.Broadcaster do
+  use GenStage
+
+  # Specify UDP port to listen for data on
+  def start_link(port) do
+    GenStage.start_link(__MODULE__, port, name: __MODULE__)
   end
 
-  def loop(subscribers) do
-    receive do
-      {:subscribe, pid} -> loop([pid | subscribers])
-      {:udp_data, data} ->
-        case F1.Parser.parse(data) do
-          telemetry = %F1.CarTelemetryData{} ->
-            for s <- subscribers, do: send s, {:update, telemetry}
-          _ -> nil
-        end
-        loop(subscribers)
-      _ -> loop(subscribers)
+  def init(port) do
+    {:ok, _socket} = :gen_udp.open(port, [:binary, active: true])
+    {:producer, :ok, dispatcher: GenStage.BroadcastDispatcher}
+  end
+
+  def handle_info({:udp, _socket, _ip, _inport, data}, state) do
+    case F1.Parser.parse(data) do
+      telemetry = %F1.CarTelemetryData{} -> {:noreply, [telemetry], state}
+      _ -> {:noreply, [], state}
     end
   end
 
-  def subscribe(client_pid) do
-    send client_pid, {:subscribe, self()}
-  end
-end
-
-defmodule Apex.Client.UDPListener do
-  def start(port) do
-    {:ok, socket} = :gen_udp.open(port, [:binary, active: false])
-    Task.start(Apex.Client.UDPListener, :listen, [socket, self()])
-  end
-
-  def listen(socket, data_callback) do
-    {:ok, {_srcip, _srcport, data}} = :gen_udp.recv(socket, 0)
-    send data_callback, {:udp_data, data}
-    listen(socket, data_callback)
+  def handle_demand(_demand, state) do
+    {:noreply, [], state}
   end
 end
