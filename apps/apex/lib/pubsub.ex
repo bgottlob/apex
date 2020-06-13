@@ -3,6 +3,7 @@ defmodule Apex.Broadcaster do
 
   # Specify UDP port to listen for data on
   def start_link(port) do
+    IO.puts "Starting Apex Broadcaster listening on UDP port #{port}"
     GenStage.start_link(__MODULE__, port, name: __MODULE__)
   end
 
