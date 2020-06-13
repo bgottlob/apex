@@ -11,7 +11,8 @@ defmodule Apex.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript()
     ]
   end
 
@@ -26,5 +27,9 @@ defmodule Apex.MixProject do
     [
       {:gen_stage, "~> 1.0.0"}
     ]
+  end
+
+  def escript do
+    [main_module: Apex.Mock.CLI, app: nil]
   end
 end
