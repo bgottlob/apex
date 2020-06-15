@@ -25,7 +25,10 @@ defmodule Apex.MixProject do
 
   defp deps do
     [
-      {:gen_stage, "~> 1.0.0"}
+      {:brink, "0.1.3", path: System.get_env("APEX_BRINK_PATH")},
+      {:flow, "1.0.0"},
+      {:gen_stage, "1.0.0"},
+      {:jason, "1.2.1"}
     ]
   end
 
