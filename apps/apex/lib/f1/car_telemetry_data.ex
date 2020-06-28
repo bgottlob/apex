@@ -55,4 +55,27 @@ defmodule F1.CarTelemetryData do
       surface_type: uint8_tuple(surface_type, 4)
     }
   end
+
+  defp tuple_for_redis_stream(map, key) do
+    tuple = Map.get(map, key)
+    map
+    |> tuple_for_redis_stream(key, tuple, tuple_size(tuple), 0)
+    |> Map.delete(key)
+  end
+
+  defp tuple_for_redis_stream(map, _key, _tuple, total, total), do: map
+  defp tuple_for_redis_stream(map,  key,  tuple, total, curr) do
+    Map.put(map, :"#{key}_#{curr + 1}", elem(tuple, curr))
+    |> tuple_for_redis_stream(key, tuple, total, curr + 1)
+  end
+
+  def to_redis_stream_map(telemetry = %F1.CarTelemetryData{}) do
+    Map.from_struct(telemetry)
+    |> tuple_for_redis_stream(:brakes_temperature)
+    |> tuple_for_redis_stream(:tyres_surface_temperature)
+    |> tuple_for_redis_stream(:tyres_inner_temperature)
+    |> tuple_for_redis_stream(:tyres_pressure)
+    |> tuple_for_redis_stream(:surface_type)
+    |> Map.put(:type, __MODULE__)
+  end
 end
