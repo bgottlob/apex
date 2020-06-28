@@ -5,6 +5,7 @@ defmodule F1.DataTypes do
     float32: quote(do: little-float-size(32)),
     uint8: quote(do: little-unsigned-integer-size(8)),
     uint16: quote(do: little-unsigned-integer-size(16)),
+    uint32: quote(do: little-unsigned-integer-size(32)),
     uint64: quote(do: little-unsigned-integer-size(64)),
     int8: quote(do: little-integer-size(8)),
     int16: quote(do: little-integer-size(16))
