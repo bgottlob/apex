@@ -18,7 +18,7 @@ defmodule Apex.RedisStreamer do
 
   def handle_events(events, _from, stage) do
     Flow.from_enumerable(events)
-    |> Flow.map(&(F1.CarTelemetryData.to_redis_stream_map(&1)))
+    |> Flow.map(&(F1.CarTelemetryData.to_redis_stream_map(elem(&1, 0)) |> IO.inspect))
     |> Flow.into_stages([stage])
 
     {:noreply, [], stage}
