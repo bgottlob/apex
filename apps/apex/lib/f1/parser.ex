@@ -1,14 +1,11 @@
 defmodule F1.Parser do
-  import F1.PacketHeader, only: [header_binary_size: 0]
-
   def parse(data) do
-    <<header::header_binary_size,
-      _::binary-size(3),
-      data::binary>> = data
+    {header, data} = F1.PacketHeader.from_binary(data)
+    <<_::binary-size(3), data::binary>> = data
 
-    header = F1.PacketHeader.from_binary(header)
-    if header.packet_id == 6 do
-      F1.CarTelemetryData.from_binary(data)
+    case header.packet_id do
+      6 -> elem(F1.CarTelemetryData.from_binary(data), 0)
+      _ -> nil
     end
   end
 end
