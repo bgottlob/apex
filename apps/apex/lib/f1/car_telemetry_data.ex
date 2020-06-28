@@ -20,40 +20,22 @@ defmodule F1.CarTelemetryData do
   ]
 
   def from_binary(data) do
-    <<speed::uint16,
-      throttle::float32,
-      steer::float32,
-      brake::float32,
-      clutch::uint8,
-      gear::int8,
-      engine_rpm::uint16,
-      drs::uint8,
-      rev_lights_percent::uint8,
-      brakes_temperature::uint16(4),
-      tyres_surface_temperature::uint16(4),
-      tyres_inner_temperature::uint16(4),
-      engine_temperature::uint16,
-      tyres_pressure::float32(4),
-      surface_type::uint8(4),
-      _rest::binary>> = data
-
-    %F1.CarTelemetryData{
-      speed: speed,
-      throttle: throttle,
-      steer: steer,
-      brake: brake,
-      clutch: clutch,
-      gear: gear,
-      engine_rpm: engine_rpm,
-      drs: drs,
-      rev_lights_percent: rev_lights_percent,
-      brakes_temperature: uint16_tuple(brakes_temperature, 4),
-      tyres_surface_temperature: uint16_tuple(tyres_surface_temperature, 4),
-      tyres_inner_temperature: uint16_tuple(tyres_inner_temperature, 4),
-      engine_temperature: engine_temperature,
-      tyres_pressure: float32_tuple(tyres_pressure, 4),
-      surface_type: uint8_tuple(surface_type, 4)
-    }
+    {%F1.CarTelemetryData{}, data}
+    |> uint16(:speed)
+    |> float32(:throttle)
+    |> float32(:steer)
+    |> float32(:brake)
+    |> uint8(:clutch)
+    |> int8(:gear)
+    |> uint16(:engine_rpm)
+    |> uint8(:drs)
+    |> uint8(:rev_lights_percent)
+    |> uint16(:brakes_temperature, 4)
+    |> uint16(:tyres_surface_temperature, 4)
+    |> uint16(:tyres_inner_temperature, 4)
+    |> uint16(:engine_temperature)
+    |> float32(:tyres_pressure, 4)
+    |> uint8(:surface_type, 4)
   end
 
   defp tuple_for_redis_stream(map, key) do
