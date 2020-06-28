@@ -22,7 +22,7 @@ defmodule F1.PacketHeader do
     |> uint8(:packet_id)
     |> uint64(:session_uid)
     |> float32(:session_time)
-    |> uint8(:frame_identifier)
+    |> uint32(:frame_identifier)
     |> uint8(:player_car_index)
   end
 end
