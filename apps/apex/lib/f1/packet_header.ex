@@ -1,6 +1,7 @@
 defmodule F1.PacketHeader do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :packet_format,
     :game_major_version,
