@@ -3,13 +3,13 @@ defmodule F1.Parser do
     {header, data} = F1.PacketHeader.from_binary(data)
 
     case header.packet_id do
-      2 -> elem(parse_tuple(data, F1.LapData, 20), 0)
-      6 -> elem(parse_tuple(data, F1.CarTelemetryData, 20), 0)
+      2 -> F1.PacketLapData.from_binary(data, header)
+      6 -> F1.PacketCarTelemetryData.from_binary(data, header)
       _ -> nil
     end
   end
 
-  defp parse_tuple(data, module, num) do
+  def parse_tuple(data, module, num) do
     parse_tuple(data, module, num, [])
   end
 

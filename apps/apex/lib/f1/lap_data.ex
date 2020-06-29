@@ -1,6 +1,22 @@
+defmodule F1.PacketLapData do
+  import F1.DataTypes
+
+  @derive Jason.Encoder
+  defstruct [
+    :header,
+    :lap_data
+  ]
+
+  def from_binary(data, header = %F1.PacketHeader{}) do
+    {data_tuple, _} = F1.Parser.parse_tuple(data, F1.LapData, 20)
+    %__MODULE__{header: header, lap_data: data_tuple}
+  end
+end
+
 defmodule F1.LapData do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :last_lap_time,
     :current_lap_time,
@@ -12,7 +28,7 @@ defmodule F1.LapData do
   ]
 
   def from_binary(data) do
-    {%F1.LapData{}, data}
+    {%__MODULE__{}, data}
     |> float32(:last_lap_time)
     |> float32(:current_lap_time)
     |> float32(:best_lap_time)
