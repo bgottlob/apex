@@ -9,7 +9,6 @@ end
 defmodule Apex.RedisStreamSerialize do
   def to_redis_stream_map(packet) do
     %{
-      # "Elixir.F1.PacketCarTelemetry" -> "F1.PacketCarTelemetry"
       type: Atom.to_string(packet.__struct__) |> String.trim_leading("Elixir."),
       data: Jason.encode!(packet)
     }
