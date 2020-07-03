@@ -50,6 +50,7 @@ defmodule F1.PacketSession do
     {%{struct | marshal_zones: zones}, data}
     |> uint8(:safety_car_status)
     |> uint8(:network_game)
+    |> elem(0)
   end
 end
 
