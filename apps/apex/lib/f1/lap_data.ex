@@ -24,7 +24,17 @@ defmodule F1.LapData do
     :sector_1_time,
     :sector_2_time,
     :lap_distance,
-    :total_distance
+    :total_distance,
+    :safety_car_delta,
+    :car_position,
+    :current_lap_num,
+    :pit_status,
+    :sector,
+    :current_lap_invalid,
+    :penalties,
+    :grid_position,
+    :driver_status,
+    :result_status
   ]
 
   def from_binary(data) do
