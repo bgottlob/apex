@@ -1,4 +1,4 @@
-defmodule F1.PacketCarTelemetryData do
+defmodule F1.CarTelemetryPacket do
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -9,7 +9,7 @@ defmodule F1.PacketCarTelemetryData do
   ]
 
   def from_binary(data, header = %F1.PacketHeader{}) do
-    {data_tuple, data} = F1.Parser.parse_tuple(data, F1.CarTelemetryData, 20)
+    {data_tuple, data} = F1.Parser.parse_tuple(data, F1.CarTelemetry, 20)
 
     {%__MODULE__{header: header, car_telemetry_data: data_tuple}, data}
     |> uint32(:button_status)
@@ -17,7 +17,7 @@ defmodule F1.PacketCarTelemetryData do
   end
 end
 
-defmodule F1.CarTelemetryData do
+defmodule F1.CarTelemetry do
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -40,7 +40,7 @@ defmodule F1.CarTelemetryData do
   ]
 
   def from_binary(data) do
-    {%F1.CarTelemetryData{}, data}
+    {%__MODULE__{}, data}
     |> uint16(:speed)
     |> float32(:throttle)
     |> float32(:steer)

@@ -1,4 +1,4 @@
-defmodule F1.PacketCarMotion do
+defmodule F1.CarMotionPacket do
   import F1.DataTypes
 
   @derive Jason.Encoder
