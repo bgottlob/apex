@@ -1,4 +1,4 @@
-defmodule F1.PacketSession do
+defmodule F1.SessionPacket do
   import F1.DataTypes
 
   @derive Jason.Encoder

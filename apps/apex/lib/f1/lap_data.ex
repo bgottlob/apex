@@ -1,4 +1,4 @@
-defmodule F1.PacketLapData do
+defmodule F1.LapDataPacket do
   import F1.DataTypes
 
   @derive Jason.Encoder

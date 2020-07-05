@@ -3,13 +3,13 @@ defmodule F1.Parser do
     {header, data} = F1.PacketHeader.from_binary(data)
 
     packet_type = case header.packet_id do
-      0 -> F1.PacketCarMotion
-      1 -> F1.PacketSession
-      2 -> F1.PacketLapData
+      0 -> F1.CarMotionPacket
+      1 -> F1.SessionPacket
+      2 -> F1.LapDataPacket
       3 -> F1.EventPacket
       4 -> F1.ParticipantPacket
       5 -> F1.CarSetupPacket
-      6 -> F1.PacketCarTelemetryData
+      6 -> F1.CarTelemetryPacket
       7 -> F1.CarStatusPacket
     end
 
