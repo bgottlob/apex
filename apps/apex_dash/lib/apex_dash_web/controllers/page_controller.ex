@@ -16,6 +16,8 @@ defmodule ApexDashWeb.DashboardLive do
     <h2>Speed: <%= @speed %> km/h</h2>
     <br>
     <h2>RPM: <%= @rpm %> rpm</h2>
+    <br>
+    <h3><%= @rev_lights_percent %> %</h3>
     """
   end
 
@@ -26,6 +28,7 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:rpm, "Loading...")
       |> assign(:speed, "Loading...")
       |> assign(:gear, "Loading...")
+      |> assign(:rev_lights_percent, "Loading...")
     }
   end
 
@@ -36,6 +39,7 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:rpm, telemetry.engine_rpm)
       |> assign(:speed, telemetry.speed)
       |> assign(:gear, telemetry.gear)
+      |> assign(:rev_lights_percent, telemetry.rev_lights_percent)
     }
   end
 
