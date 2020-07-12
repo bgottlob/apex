@@ -19,7 +19,8 @@ defmodule ApexShiftBulb do
 
   defp bulb_loop(alert_on) do
     receive do
-      {:update, telemetry} ->
+      {:update, %F1.CarTelemetryPacket{car_telemetry_data: telemetry}} ->
+        telemetry = elem(telemetry, 0)
         payload = case telemetry.rev_lights_percent do
           100 when alert_on != true -> %{alert: "select", on: true, bri: 50}
           x when x < 100 and alert_on == true -> %{alert: "none", on: true, bri: 50}

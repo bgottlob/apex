@@ -29,12 +29,17 @@ defmodule ApexDashWeb.DashboardLive do
     }
   end
 
-  def handle_info({:update, telemetry}, socket) do
+  def handle_info({:update, %F1.CarTelemetryPacket{car_telemetry_data: telemetry}}, socket) do
+    telemetry = elem(telemetry, 0)
     {:noreply,
       socket
       |> assign(:rpm, telemetry.engine_rpm)
       |> assign(:speed, telemetry.speed)
       |> assign(:gear, telemetry.gear)
     }
+  end
+
+  def handle_info(_, socket) do
+    {:noreply, socket}
   end
 end
