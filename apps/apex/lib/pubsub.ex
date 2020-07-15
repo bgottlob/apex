@@ -13,11 +13,7 @@ defmodule Apex.Broadcaster do
   end
 
   def handle_info({:udp, _socket, _ip, _inport, data}, state) do
-    case F1.Parser.parse(data) do
-      telemetry = %F1.CarTelemetryPacket{} -> {:noreply, [telemetry], state}
-      telemetry = %F1.LapDataPacket{} -> {:noreply, [telemetry], state}
-      _ -> {:noreply, [], state}
-    end
+    {:noreply, [F1.Parser.parse(data)], state}
   end
 
   def handle_demand(_demand, state) do
