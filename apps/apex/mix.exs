@@ -18,7 +18,6 @@ defmodule Apex.MixProject do
 
   def application do
     [
-      mod: {Apex, [20777]},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
