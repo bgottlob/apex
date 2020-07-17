@@ -22,7 +22,14 @@ defmodule ApexDashWeb.DashboardLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, _sub} = Apex.Subscriber.start_link(self())
+    # Register to receive updates from ApexDash.LiveDispatcher process
+    {:ok, _} = Registry.register(
+      Registry.LiveDispatcher,
+      __MODULE__,
+      # In the future this value could correspond to the car index to focus on
+      nil
+    )
+
     {:ok,
       socket
       |> assign(:rpm, "Loading...")
@@ -32,7 +39,7 @@ defmodule ApexDashWeb.DashboardLive do
     }
   end
 
-  def handle_info({:update, %F1.CarTelemetryPacket{car_telemetry_data: telemetry}}, socket) do
+  def handle_info(%F1.CarTelemetryPacket{car_telemetry_data: telemetry}, socket) do
     telemetry = elem(telemetry, 0)
     {:noreply,
       socket
@@ -45,5 +52,16 @@ defmodule ApexDashWeb.DashboardLive do
 
   def handle_info(_, socket) do
     {:noreply, socket}
+  end
+
+  def terminate(_reason, socket) do
+    msg = "Error: please refresh to keep loading data"
+    {:shutdown,
+      socket
+      |> assign(:rpm, msg)
+      |> assign(:speed, msg)
+      |> assign(:gear, msg)
+      |> assign(:rev_lights_percent, msg)
+    }
   end
 end
