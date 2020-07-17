@@ -12,8 +12,13 @@ defmodule ApexDash.Application do
       supervisor(ApexDashWeb.Endpoint, []),
       # Start your own worker by calling: ApexDash.Worker.start_link(arg1, arg2, arg3)
       # worker(ApexDash.Worker, [arg1, arg2, arg3]),
-      {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]}
+      {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]},
+      # Start a registry that LiveView processes will register with for updates
+      {Registry, keys: :duplicate, name: Registry.LiveDispatcher},
+      {ApexDash.LiveDispatcher, []}
     ]
+
+    Node.connect(Application.get_env(:apex_dash, :broadcast) |> IO.inspect)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
