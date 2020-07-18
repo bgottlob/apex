@@ -14,16 +14,21 @@ defmodule ApexDash.Application do
       # worker(ApexDash.Worker, [arg1, arg2, arg3]),
       {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]},
       # Start a registry that LiveView processes will register with for updates
-      {Registry, keys: :duplicate, name: Registry.LiveDispatcher},
-      {ApexDash.LiveDispatcher, []}
+      {Registry, keys: :duplicate, name: Registry.LiveDispatcher}
     ]
 
-    Node.connect(Application.get_env(:apex_dash, :broadcast) |> IO.inspect)
+    stages = case Node.connect(Application.get_env(:apex_dash, :broadcast)) do
+      true -> [{ApexDash.LiveDispatcher, []}]
+      _ -> [%{
+          id: Apex.Broadcaster,
+          start: {Apex.Broadcaster, :start_link, [20777, [name: {:global, ApexBroadcast}]]}
+      } , {ApexDash.LiveDispatcher, []}]
+    end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ApexDash.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(List.flatten(children, stages), opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
