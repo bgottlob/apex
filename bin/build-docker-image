@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Usage: bin/build-docker-image <app_name> <path_to_brink>
+
+set -e
+
+APP_NAME="$(grep 'app:' apps/$1/mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
+APP_VSN="$(grep 'version:' apps/$1/mix.exs | cut -d '"' -f2)"
+BUILD="$(git rev-parse --short HEAD)"
+
+echo "Building docker image $APP_NAME:$APP_VSN-$BUILD"
+
+docker build --build-arg APP_NAME=$APP_NAME \
+             --build-arg APP_VSN=$APP_VSN \
+             --build-arg BRINK_PATH=$2 \
+             -t $APP_NAME:$APP_VSN-$BUILD \
+             -t $APP_NAME:latest .
