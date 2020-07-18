@@ -21,8 +21,7 @@ ARG BRINK_DIR
 ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
     APP_NAME=${APP_NAME} \
     APP_VSN=${APP_VSN} \
-    MIX_ENV=${MIX_ENV} \
-    BRINK_PATH=${BRINK_PATH}
+    MIX_ENV=${MIX_ENV}
 
 # By convention, /opt is typically used for applications
 WORKDIR /opt/app
@@ -43,7 +42,6 @@ COPY . .
 
 COPY ./brink/brink /opt/brink
 ENV APEX_BRINK_PATH /opt/brink
-RUN ["ls", "/opt/brink"]
 
 RUN mix do deps.get, deps.compile, compile
 
