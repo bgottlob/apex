@@ -1,0 +1,21 @@
+version: '3.8'
+
+networks:
+  apex_net:
+    driver: overlay
+    attachable: true # Needed to run custom commands in a container
+
+services:
+  apex_dash:
+    image: "apex_dash:latest"
+    ports:
+      - "4000:4000"
+      - "20777:20777/udp"
+    environment:
+      PORT: 4000
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - apex_net
