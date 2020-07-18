@@ -15,8 +15,16 @@ use Mix.Config
 # which you typically run after static files are built.
 config :apex_dash, ApexDashWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [:inet6, port: System.get_env("PORT") || 4000],
+  # Needed to properly authorize websockets
+  url: [host: "localhost", port: System.get_env("PORT")],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  # Boot Cowboy application HTTP endpoint on start
+  server: true,
+  # Configure application for serving static files
+  root: ".",
+  # Bust the asset cache on versioned application upgrades
+  version: Application.spec(:apex_dash, :vsn)
 
 # Do not print debug messages in production
 config :logger, level: :info

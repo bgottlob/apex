@@ -57,6 +57,7 @@ end
 release :apex_dash do
   set version: current_version(:apex_dash)
   set applications: [
+    :apex_dash,
     :runtime_tools
   ]
 end
