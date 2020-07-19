@@ -17,7 +17,7 @@ config :apex_dash, ApexDashWeb.Endpoint,
   load_from_system_env: true,
   http: [:inet6, port: System.get_env("PORT") || 4000],
   # Needed to properly authorize websockets
-  url: [host: "localhost", port: System.get_env("PORT")],
+  url: [host: System.get_env("CONTAINER_IP"), port: System.get_env("PORT")],
   cache_static_manifest: "priv/static/cache_manifest.json",
   # Boot Cowboy application HTTP endpoint on start
   server: true,
