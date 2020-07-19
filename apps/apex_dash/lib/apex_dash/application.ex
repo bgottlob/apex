@@ -17,12 +17,26 @@ defmodule ApexDash.Application do
       {Registry, keys: :duplicate, name: Registry.LiveDispatcher}
     ]
 
-    stages = case Node.connect(Application.get_env(:apex_dash, :broadcast)) do
-      true -> [{ApexDash.LiveDispatcher, []}]
-      _ -> [%{
-          id: Apex.Broadcaster,
-          start: {Apex.Broadcaster, :start_link, [20777, [name: {:global, ApexBroadcast}]]}
-      } , {ApexDash.LiveDispatcher, []}]
+    {string, _} = System.cmd("nslookup", [System.get_env("APEX_BROADCAST_HOST")])
+    ip =
+      Regex.scan(~r/Address: (\d{1,4}\.\d{1,4}\.\d{1,4}\.\d{1,4})/, string)
+      |> List.flatten
+      |> List.last
+      |> String.trim
+    
+
+    broadcast_node =
+      :"apex_broadcast@#{ip}"
+      |> IO.inspect
+
+    stages = case Node.connect(broadcast_node) |> IO.inspect do
+      true ->
+        IO.puts "Connected to distributed Apex Broadcast node"
+        :global.sync()
+        [{ApexDash.LiveDispatcher, []}]
+      _ ->
+        [%{id: Apex.Broadcaster, start: {Apex.Broadcaster, :start_link, [20777, [name: {:global, ApexBroadcast}]]}},
+          {ApexDash.LiveDispatcher, []}]
     end
 
     # See https://hexdocs.pm/elixir/Supervisor.html

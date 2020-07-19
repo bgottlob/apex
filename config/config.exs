@@ -9,3 +9,6 @@ config :apex_shift_bulb,
 
 config :apex,
   redis_uri: System.get_env("APEX_REDIS_URI")
+
+config :apex_dash,
+  broadcast_host: System.get_env("APEX_BROADCAST_HOST")

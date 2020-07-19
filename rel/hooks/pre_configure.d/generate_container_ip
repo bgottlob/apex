@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Setting CONTAINER_IP to $(hostname -i)"
+export CONTAINER_IP=$(hostname -i)

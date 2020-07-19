@@ -37,8 +37,8 @@ end
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"YRqdaa$yL4SYnvA`kE}qdCffsXM=cpPjCQOt[YuES_5x<iw!i{3[g(;He1K{.mE~"
   set vm_args: "rel/vm.args"
+  set pre_configure_hooks: "rel/hooks/pre_configure.d"
 end
 
 # You may define one or more releases in this file.
