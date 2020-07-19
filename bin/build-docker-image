@@ -10,7 +10,14 @@ BUILD="$(git rev-parse --short HEAD)"
 
 echo "Building docker image $APP_NAME:$APP_VSN-$BUILD"
 
+SKIP_PHOENIX="true"
+
+if [ "$1" = "apex_dash" ]; then
+  SKIP_PHOENIX="false"
+fi
+
 docker build --build-arg APP_NAME=$APP_NAME \
              --build-arg APP_VSN=$APP_VSN \
+             --build-arg SKIP_PHOENIX=$SKIP_PHOENIX \
              -t $APP_NAME:$APP_VSN-$BUILD \
              -t $APP_NAME:latest .
