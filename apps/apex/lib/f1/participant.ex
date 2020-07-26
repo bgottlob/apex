@@ -1,6 +1,7 @@
 defmodule F1.ParticipantPacket do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :header,
     :num_active_cars,
@@ -18,6 +19,7 @@ end
 defmodule F1.Participant do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :ai_controlled,
     :driver_id,

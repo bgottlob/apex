@@ -1,6 +1,7 @@
 defmodule F1.EventPacket do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :header,
     :event_string_code,
@@ -31,6 +32,7 @@ defmodule F1.EventPacket do
 end
 
 defmodule F1.Event.SessionStarted do
+  @derive Jason.Encoder
   defstruct []
 
   def from_binary(_) do
@@ -39,6 +41,7 @@ defmodule F1.Event.SessionStarted do
 end
 
 defmodule F1.Event.SessionEnded do
+  @derive Jason.Encoder
   defstruct []
 
   def from_binary(_) do
@@ -47,6 +50,7 @@ defmodule F1.Event.SessionEnded do
 end
 
 defmodule F1.Event.DRSEnabled do
+  @derive Jason.Encoder
   defstruct []
 
   def from_binary(_) do
@@ -55,6 +59,7 @@ defmodule F1.Event.DRSEnabled do
 end
 
 defmodule F1.Event.DRSDisabled do
+  @derive Jason.Encoder
   defstruct []
 
   def from_binary(_) do
@@ -63,6 +68,7 @@ defmodule F1.Event.DRSDisabled do
 end
 
 defmodule F1.Event.ChequeredFlag do
+  @derive Jason.Encoder
   defstruct []
 
   def from_binary(_) do
@@ -73,6 +79,7 @@ end
 defmodule F1.Event.FastestLap do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :vehicle_index,
     :lap_time
@@ -88,6 +95,7 @@ end
 defmodule F1.Event.Retirement do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [:vehicle_index]
 
   def from_binary(data) do
@@ -99,6 +107,7 @@ end
 defmodule F1.Event.TeamMateInPits do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [:vehicle_index]
 
   def from_binary(data) do
@@ -110,6 +119,7 @@ end
 defmodule F1.Event.RaceWinner do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [:vehicle_index]
 
   def from_binary(data) do

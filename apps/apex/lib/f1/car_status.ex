@@ -1,4 +1,5 @@
 defmodule F1.CarStatusPacket do
+  @derive Jason.Encoder
   defstruct [
     :header,
     :car_statuses
@@ -13,6 +14,7 @@ end
 defmodule F1.CarStatus do
   import F1.DataTypes
 
+  @derive Jason.Encoder
   defstruct [
     :traction_control,
     :anti_lock_brakes,
