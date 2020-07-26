@@ -6,14 +6,13 @@ defmodule Apex.RedisStreamer do
     IO.puts "Connecting to #{Application.fetch_env!(:apex, :redis_uri)}"
     {:ok, stage} = Brink.Producer.start_link(
       redis_uri: Application.fetch_env!(:apex, :redis_uri),
-      stream: "telemetry",
-      maxlen: 20_000
+      stream: "telemetry"
     )
     GenStage.start_link(__MODULE__, stage)
   end
 
   def init(stage) do
-    {:consumer, stage, subscribe_to: [{Apex.Broadcaster, [max_demand: 5]}]}
+    {:consumer, stage, subscribe_to: [{:global.whereis_name(ApexBroadcast), [max_demand: 5]}]}
   end
 
   def handle_events(events, _from, stage) do
