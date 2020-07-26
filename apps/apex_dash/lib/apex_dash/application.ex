@@ -17,24 +17,13 @@ defmodule ApexDash.Application do
       {Registry, keys: :duplicate, name: Registry.LiveDispatcher}
     ]
 
-    {string, _} = System.cmd("nslookup", [System.get_env("APEX_BROADCAST_HOST")])
-    ip =
-      Regex.scan(~r/Address: (\d{1,4}\.\d{1,4}\.\d{1,4}\.\d{1,4})/, string)
-      |> List.flatten
-      |> List.last
-      |> String.trim
-    
-
-    broadcast_node =
-      :"apex_broadcast@#{ip}"
-      |> IO.inspect
-
-    stages = case Node.connect(broadcast_node) |> IO.inspect do
+    stages = case Apex.Environment.connect_to_broadcast do
       true ->
         IO.puts "Connected to distributed Apex Broadcast node"
         :global.sync()
         [{ApexDash.LiveDispatcher, []}]
       _ ->
+        IO.puts "Unable to connect to Apex Broadcast node"
         [%{id: Apex.Broadcaster, start: {Apex.Broadcaster, :start_link, [20777, [name: {:global, ApexBroadcast}]]}},
           {ApexDash.LiveDispatcher, []}]
     end
