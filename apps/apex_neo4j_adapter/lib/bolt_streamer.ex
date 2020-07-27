@@ -3,12 +3,15 @@ defmodule ApexNeo4jAdapter.BoltStreamer do
 
   def start_link(url) do
     {:ok, _neo} = Bolt.Sips.start_link(url: url)
+    IO.puts "Connected to Bolt"
     conn = Bolt.Sips.conn()
     GenStage.start_link(__MODULE__, conn)
   end
 
   def init(conn) do
-    {:consumer, conn, subscribe_to: [{Apex.Broadcaster, [max_demand: 50]}]}
+    {:consumer,
+      conn,
+      subscribe_to: [{:global.whereis_name(ApexBroadcast), [max_demand: 50]}]}
   end
 
   def handle_events(events, _from, conn) do
@@ -23,7 +26,6 @@ defmodule ApexNeo4jAdapter.BoltStreamer do
   end
 
   defp create_event_query(packet = %F1.SessionPacket{}) do
-    IO.puts "Creating session!"
     """
     MERGE (s:Session { session_uid: '#{packet.header.session_uid}' })
     ON MATCH SET s += {
