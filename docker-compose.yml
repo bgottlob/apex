@@ -65,6 +65,25 @@ services:
       - apex_broadcast
       - redis
 
+  apex_neo4j_adapter:
+    image: "apex_neo4j_adapter:latest"
+    container_name: apex_neo4j_adapter.com
+    environment:
+      APEX_BROADCAST_HOST: apex_broadcast.com
+      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@apex_neo4j.com:7687"
+      MIX_ENV: ${MIX_ENV}
+    env_file:
+      - .erlang.cookie
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - apex_net
+    depends_on:
+      - apex_broadcast
+      - neo4j
+
   # Databases
   redis:
     image: "redis:6.0-alpine"
@@ -86,7 +105,8 @@ services:
       - "7687:7687"
     volumes:
       - "apex_neo4j_data:/data"
-
+    networks:
+      - apex_net
 
   # Flink cluster
   jobmanager:

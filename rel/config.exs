@@ -77,3 +77,12 @@ release :apex_redis_streamer do
     :runtime_tools
   ]
 end
+
+release :apex_neo4j_adapter do
+  set version: current_version(:apex_neo4j_adapter)
+  set applications: [
+    :apex_neo4j_adapter,
+    :mix,
+    :runtime_tools
+  ]
+end
