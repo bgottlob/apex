@@ -19,7 +19,7 @@ defmodule ApexRedisStreamer.MixProject do
   def application do
     [
       mod: {ApexRedisStreamer.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:mix, :logger]
     ]
   end
 

@@ -15,9 +15,6 @@ ARG SKIP_PHOENIX=false
 # The directory the Phoenix app is in so that the assets
 ARG PHOENIX_SUBDIR=./apps/${APP_NAME}
 
-# Local directory containing Brink library (required)
-ARG BRINK_DIR
-
 ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
     APP_NAME=${APP_NAME} \
     APP_VSN=${APP_VSN} \
@@ -39,9 +36,6 @@ RUN apk update && \
 
 # This copies our app source code into the build container
 COPY . .
-
-COPY ./brink/brink /opt/brink
-ENV APEX_BRINK_PATH /opt/brink
 
 RUN mix do deps.get, deps.compile, compile
 
