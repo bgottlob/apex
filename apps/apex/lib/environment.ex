@@ -1,6 +1,6 @@
-defmodule Apex.Environment do
+defmodule Apex.Node do
   @moduledoc """
-  Functions for interacting with Apex's distributed environment
+  Functions for interacting with nodes in Apex's distributed environment
   """
 
   # Perform a DNS lookup to find the IP address of the node
@@ -13,12 +13,11 @@ defmodule Apex.Environment do
     |> String.trim
   end
 
-  # Connect to node running apex_broadcast application
-  def connect_to_broadcast do
+  def connect(name, hostname) do
     ip = case Mix.env() == :prod do
-      true -> look_up_ip(Application.fetch_env!(:apex, :broadcast_host))
+      true -> look_up_ip(hostname)
       _    -> Node.self |> to_string |> String.split("@") |> List.last
     end
-    Node.connect(:"apex_broadcast@#{ip}")
+    Node.connect(:"#{name}@#{ip}")
   end
 end

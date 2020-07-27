@@ -69,3 +69,11 @@ release :apex_shift_bulb do
   ]
 end
 
+release :apex_redis_streamer do
+  set version: current_version(:apex_redis_streamer)
+  set applications: [
+    :apex_redis_streamer,
+    :mix,
+    :runtime_tools
+  ]
+end

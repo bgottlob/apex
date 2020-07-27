@@ -17,7 +17,12 @@ defmodule ApexDash.Application do
       {Registry, keys: :duplicate, name: Registry.LiveDispatcher}
     ]
 
-    stages = case Apex.Environment.connect_to_broadcast do
+    conn = Apex.Node.connect(
+      :apex_broadcast,
+      System.get_env("APEX_BROADCAST_HOST")
+    )
+
+    stages = case conn do
       true ->
         IO.puts "Connected to distributed Apex Broadcast node"
         :global.sync()

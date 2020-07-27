@@ -14,7 +14,7 @@ services:
     environment:
       PORT: 4000
       APEX_BROADCAST_HOST: apex_broadcast.com
-      ERLANG_COOKIE: hello
+      MIX_ENV: ${MIX_ENV}
     env_file:
       - .erlang.cookie
     deploy:
@@ -25,13 +25,47 @@ services:
       - apex_net
     depends_on:
       - apex_broadcast
+
   apex_broadcast:
     image: "apex_broadcast:latest"
     ports:
       - "20777:20777/udp"
     container_name: apex_broadcast.com
+    environment:
+      MIX_ENV: ${MIX_ENV}
     env_file:
       - .erlang.cookie
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - apex_net
+
+  apex_redis_streamer:
+    image: "apex_redis_streamer:latest"
+    container_name: apex_redis_streamer.com
+    environment:
+      APEX_BROADCAST_HOST: apex_broadcast.com
+      APEX_REDIS_URI: "redis://apex_redis.com:6379"
+      MIX_ENV: ${MIX_ENV}
+    env_file:
+      - .erlang.cookie
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - apex_net
+    depends_on:
+      - apex_broadcast
+      - redis
+
+  redis:
+    image: "redis:6.0-alpine"
+    container_name: apex_redis.com
+    ports:
+      - "6379:6379"
     deploy:
       replicas: 1
       restart_policy:

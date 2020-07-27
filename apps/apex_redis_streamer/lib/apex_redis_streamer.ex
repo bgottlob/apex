@@ -8,9 +8,12 @@ defmodule ApexRedisStreamer do
   end
 
   def init(stage) do
-    {:consumer,
-      stage,
-      subscribe_to: [{:global.whereis_name(ApexBroadcast), [max_demand: 5]}]}
+    case :global.whereis_name(ApexBroadcast) do
+      :undefined ->
+        {:stop, "Unable to find ApexBroadcast producer process"}
+      pid ->
+        {:consumer, stage, subscribe_to: [{pid, [max_demand: 5]}]}
+    end
   end
 
   def handle_events(events, _from, stage) do
