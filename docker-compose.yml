@@ -2,7 +2,7 @@ version: '3.8'
 
 networks:
   apex_net:
-    driver: overlay
+    driver: bridge
     attachable: true # Needed to run custom commands in a container
 
 services:
@@ -72,3 +72,35 @@ services:
         condition: on-failure
     networks:
       - apex_net
+
+  # Flink cluster
+  jobmanager:
+    image: flink:1.11-scala_2.12
+    container_name: apex_flink_jobmanager.com
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      APEX_REDIS_URI: "redis://apex_redis.com:6379"
+      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
+    networks:
+      - apex_net
+
+  taskmanager:
+    image: flink:1.11-scala_2.12
+    command: taskmanager
+    environment:
+      APEX_REDIS_URI: "redis://apex_redis.com:6379"
+      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - apex_net
+    depends_on:
+      - jobmanager
