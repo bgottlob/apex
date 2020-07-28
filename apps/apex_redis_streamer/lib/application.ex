@@ -9,10 +9,16 @@ defmodule ApexRedisStreamer.Application do
       true ->
         IO.puts "Connected to Apex Broadcast"
         :global.sync()
-        ApexRedisStreamer.start_link(
-          System.get_env("APEX_REDIS_URI"),
-          "telemetry"
-        )
+        children = [%{
+          id: ApexRedisStreamer,
+          start: {
+            ApexRedisStreamer,
+            :start_link,
+            [System.get_env("APEX_REDIS_URI"), "telemetry"]
+          },
+          restart: :permanent
+        }]
+        Supervisor.start_link(children, strategy: :one_for_one)
       _ ->
         {:error, "Unable to connect to Apex Broadcast, exiting"}
     end
