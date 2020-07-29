@@ -12,13 +12,12 @@ networks:
 services:
   # Elixir Applications
   apex_dash:
-    image: "apex_dash:latest"
+    image: "bgottlob/apex_dash:latest"
     ports:
       - "4000:4000"
-    container_name: apex_dash.com
     environment:
       PORT: 4000
-      APEX_BROADCAST_HOST: apex_broadcast.com
+      APEX_BROADCAST_HOST: tasks.apex_broadcast
       MIX_ENV: ${MIX_ENV}
     env_file:
       - .erlang.cookie
@@ -32,10 +31,9 @@ services:
       - apex_broadcast
 
   apex_broadcast:
-    image: "apex_broadcast:latest"
+    image: "bgottlob/apex_broadcast:latest"
     ports:
       - "20777:20777/udp"
-    container_name: apex_broadcast.com
     environment:
       MIX_ENV: ${MIX_ENV}
     env_file:
@@ -48,11 +46,10 @@ services:
       - apex_net
 
   apex_redis_streamer:
-    image: "apex_redis_streamer:latest"
-    container_name: apex_redis_streamer.com
+    image: "bgottlob/apex_redis_streamer:latest"
     environment:
-      APEX_BROADCAST_HOST: apex_broadcast.com
-      APEX_REDIS_URI: "redis://apex_redis.com:6379"
+      APEX_BROADCAST_HOST: tasks.apex_broadcast
+      APEX_REDIS_URI: "redis://tasks.apex_redis:6379"
       MIX_ENV: ${MIX_ENV}
     env_file:
       - .erlang.cookie
@@ -67,11 +64,10 @@ services:
       - redis
 
   apex_neo4j_adapter:
-    image: "apex_neo4j_adapter:latest"
-    container_name: apex_neo4j_adapter.com
+    image: "bgottlob/apex_neo4j_adapter:latest"
     environment:
-      APEX_BROADCAST_HOST: apex_broadcast.com
-      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@apex_neo4j.com:7687"
+      APEX_BROADCAST_HOST: tasks.apex_broadcast
+      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@tasks.apex_neo4j:7687"
       MIX_ENV: ${MIX_ENV}
     env_file:
       - .erlang.cookie
@@ -88,7 +84,6 @@ services:
   # Databases
   redis:
     image: "redis:6.0-alpine"
-    container_name: apex_redis.com
     ports:
       - "6379:6379"
     volumes:
@@ -102,7 +97,6 @@ services:
 
   neo4j:
     image: "neo4j:4.1"
-    container_name: apex_neo4j.com
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -114,7 +108,6 @@ services:
   # Flink cluster
   jobmanager:
     image: flink:1.11-scala_2.12
-    container_name: apex_flink_jobmanager.com
     ports:
       - "8081:8081"
     command: jobmanager
@@ -123,8 +116,9 @@ services:
       restart_policy:
         condition: on-failure
     environment:
-      APEX_REDIS_URI: "redis://apex_redis.com:6379"
-      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
+      APEX_REDIS_HOST: tasks.apex_redis
+      APEX_REDIS_PORT: 6379
+      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
     networks:
       - apex_net
 
@@ -132,8 +126,9 @@ services:
     image: flink:1.11-scala_2.12
     command: taskmanager
     environment:
-      APEX_REDIS_URI: "redis://apex_redis.com:6379"
-      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
+      APEX_REDIS_HOST: tasks.apex_redis
+      APEX_REDIS_PORT: 6379
+      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
     deploy:
       replicas: 1
       restart_policy:
