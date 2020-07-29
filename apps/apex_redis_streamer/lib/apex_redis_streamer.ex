@@ -3,7 +3,7 @@ defmodule ApexRedisStreamer do
 
   def start_link(uri, stream) do
     IO.puts "Connecting to #{uri}"
-    {:ok, stage} = Brink.Producer.start_link(redis_uri: uri, stream: stream)
+    {:ok, stage} = Brink.Producer.start_link(redis_uri: uri, stream: stream, maxlen: 5000)
     GenStage.start_link(__MODULE__, stage)
   end
 
