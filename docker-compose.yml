@@ -6,8 +6,8 @@ volumes:
 
 networks:
   apex_net:
-    driver: bridge
-    attachable: true # Needed to run custom commands in a container
+    driver: overlay
+    attachable: true
 
 services:
   # Elixir Applications
