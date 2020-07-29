@@ -53,7 +53,7 @@ services:
     image: "bgottlob/apex_redis_streamer:latest"
     environment:
       APEX_BROADCAST_HOST: tasks.apex_broadcast
-      APEX_REDIS_URI: "redis://tasks.apex_redis:6379"
+      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@tasks.apex_redis:6379"
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
     deploy:
@@ -92,6 +92,7 @@ services:
   # Databases
   redis:
     image: "redis:6.0-alpine"
+    command: "redis-server --requirepass ${APEX_REDIS_PASSWORD}"
     ports:
       - "6379:6379"
     volumes:
@@ -141,6 +142,7 @@ services:
     environment:
       APEX_REDIS_HOST: tasks.apex_redis
       APEX_REDIS_PORT: 6379
+      APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
       FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
     networks:
       - apex_net
@@ -151,6 +153,7 @@ services:
     environment:
       APEX_REDIS_HOST: tasks.apex_redis
       APEX_REDIS_PORT: 6379
+      APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
       FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
     deploy:
       replicas: 1
