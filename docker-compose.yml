@@ -111,6 +111,8 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
+    environment:
+      NEO4J_AUTH: "${APEX_BOLT_USERNAME}/${APEX_BOLT_PASSWORD}"
     volumes:
       - "apex_neo4j_data:/data"
     deploy:
