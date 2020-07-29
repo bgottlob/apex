@@ -19,8 +19,7 @@ services:
       PORT: 4000
       APEX_BROADCAST_HOST: tasks.apex_broadcast
       MIX_ENV: ${MIX_ENV}
-    env_file:
-      - .erlang.cookie
+      ERLANG_COOKIE: ${ERLANG_COOKIE}
     deploy:
       replicas: 1
       restart_policy:
@@ -36,8 +35,7 @@ services:
       - "20777:20777/udp"
     environment:
       MIX_ENV: ${MIX_ENV}
-    env_file:
-      - .erlang.cookie
+      ERLANG_COOKIE: ${ERLANG_COOKIE}
     deploy:
       replicas: 1
       restart_policy:
@@ -51,8 +49,7 @@ services:
       APEX_BROADCAST_HOST: tasks.apex_broadcast
       APEX_REDIS_URI: "redis://tasks.apex_redis:6379"
       MIX_ENV: ${MIX_ENV}
-    env_file:
-      - .erlang.cookie
+      ERLANG_COOKIE: ${ERLANG_COOKIE}
     deploy:
       replicas: 1
       restart_policy:
@@ -69,8 +66,7 @@ services:
       APEX_BROADCAST_HOST: tasks.apex_broadcast
       APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@tasks.apex_neo4j:7687"
       MIX_ENV: ${MIX_ENV}
-    env_file:
-      - .erlang.cookie
+      ERLANG_COOKIE: ${ERLANG_COOKIE}
     deploy:
       replicas: 1
       restart_policy:
