@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   apex_neo4j_data:
+  apex_redis_data:
 
 networks:
   apex_net:
@@ -90,6 +91,8 @@ services:
     container_name: apex_redis.com
     ports:
       - "6379:6379"
+    volumes:
+      - "apex_redis_data:/data"
     deploy:
       replicas: 1
       restart_policy:
