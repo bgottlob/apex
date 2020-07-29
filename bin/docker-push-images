@@ -1,0 +1,4 @@
+docker push bgottlob/apex_dash:latest &&
+  docker push bgottlob/apex_broadcast:latest &&
+  docker push bgottlob/apex_neo4j_adapter:latest &&
+  docker push bgottlob/apex_redis_streamer:latest
