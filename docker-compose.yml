@@ -24,6 +24,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==docker-swarm-manager"
     networks:
       - apex_net
     depends_on:
@@ -40,6 +43,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==docker-swarm-manager"
     networks:
       - apex_net
 
@@ -54,6 +60,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==redis-node"
     networks:
       - apex_net
     depends_on:
@@ -71,6 +80,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==neo4j-node"
     networks:
       - apex_net
     depends_on:
@@ -88,6 +100,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==redis-node"
     networks:
       - apex_net
 
@@ -98,6 +113,13 @@ services:
       - "7687:7687"
     volumes:
       - "apex_neo4j_data:/data"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==neo4j-node"
     networks:
       - apex_net
 
@@ -111,6 +133,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==flink-node"
     environment:
       APEX_REDIS_HOST: tasks.apex_redis
       APEX_REDIS_PORT: 6379
@@ -129,6 +154,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.hostname==flink-node"
     networks:
       - apex_net
     depends_on:
