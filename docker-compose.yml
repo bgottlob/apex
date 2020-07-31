@@ -6,8 +6,7 @@ volumes:
 
 networks:
   apex_net:
-    driver: overlay
-    attachable: true
+    driver: bridge
 
 services:
   # Elixir Applications
@@ -17,16 +16,9 @@ services:
       - "4000:4000"
     environment:
       PORT: 4000
-      APEX_BROADCAST_HOST: tasks.apex_broadcast
+      APEX_BROADCAST_HOST: apex_broadcast
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==docker-swarm-manager"
     networks:
       - apex_net
     depends_on:
@@ -39,30 +31,16 @@ services:
     environment:
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==docker-swarm-manager"
     networks:
       - apex_net
 
   apex_redis_streamer:
     image: "bgottlob/apex_redis_streamer:latest"
     environment:
-      APEX_BROADCAST_HOST: tasks.apex_broadcast
-      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@tasks.apex_redis:6379"
+      APEX_BROADCAST_HOST: apex_broadcast
+      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@redis:6379"
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==redis-node"
     networks:
       - apex_net
     depends_on:
@@ -72,17 +50,10 @@ services:
   apex_neo4j_adapter:
     image: "bgottlob/apex_neo4j_adapter:latest"
     environment:
-      APEX_BROADCAST_HOST: tasks.apex_broadcast
-      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@tasks.apex_neo4j:7687"
+      APEX_BROADCAST_HOST: apex_broadcast
+      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@neo4j:7687"
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==neo4j-node"
     networks:
       - apex_net
     depends_on:
@@ -103,7 +74,7 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - "node.hostname==redis-node"
+          - "node.labels.redis==true"
     networks:
       - apex_net
 
@@ -122,7 +93,7 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - "node.hostname==neo4j-node"
+          - "node.labels.neo4j==true"
     networks:
       - apex_net
 
@@ -132,18 +103,11 @@ services:
     ports:
       - "8081:8081"
     command: jobmanager
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==flink-node"
     environment:
-      APEX_REDIS_HOST: tasks.apex_redis
+      APEX_REDIS_HOST: redis
       APEX_REDIS_PORT: 6379
       APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
-      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
+      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
     networks:
       - apex_net
 
@@ -151,17 +115,10 @@ services:
     image: flink:1.11-scala_2.12
     command: taskmanager
     environment:
-      APEX_REDIS_HOST: tasks.apex_redis
+      APEX_REDIS_HOST: redis
       APEX_REDIS_PORT: 6379
       APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
-      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - "node.hostname==flink-node"
+      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
     networks:
       - apex_net
     depends_on:

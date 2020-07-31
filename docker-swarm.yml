@@ -1,0 +1,100 @@
+version: '3.8'
+
+networks:
+  apex_net:
+    driver: overlay
+    attachable: true
+
+services:
+  apex_dash:
+    environment:
+      MIX_ENV: prod
+      APEX_BROADCAST_HOST: tasks.apex_broadcast
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.apex_dash==true"
+
+  apex_broadcast:
+    environment:
+      MIX_ENV: prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.apex_broadcast==true"
+
+  apex_redis_streamer:
+    environment:
+      MIX_ENV: prod
+      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@tasks.apex_redis:6379"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.redis==true"
+
+  apex_neo4j_adapter:
+    environment:
+      APEX_BROADCAST_HOST: tasks.apex_broadcast
+      APEX_BOLT_URI: "bolt://${APEX_BOLT_USERNAME}:${APEX_BOLT_PASSWORD}@tasks.apex_neo4j:7687"
+      MIX_ENV: prod
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.neo4j==true"
+
+  redis:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.redis==true"
+
+  neo4j:
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.neo4j==true"
+    networks:
+      - apex_net
+
+  # Flink cluster
+  jobmanager:
+    environment:
+      APEX_REDIS_HOST: apex_redis
+      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.flink==true"
+
+  taskmanager:
+    environment:
+      APEX_REDIS_HOST: apex_redis
+      FLINK_PROPERTIES: "jobmanager.rpc.address: tasks.jobmanager"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.flink==true"
