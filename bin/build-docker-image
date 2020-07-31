@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Usage: bin/build-docker-image <app_name> <path_to_brink>
+# Usage: bin/build-docker-image <app_name>
 
 set -e
 
