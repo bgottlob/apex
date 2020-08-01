@@ -45,7 +45,8 @@ defmodule ApexDash.Mixfile do
       {:apex, in_umbrella: true},
       {:phoenix_live_view, "0.14.1"},
       {:jason, "~> 1.2.1"},
-      {:gen_stage, "~> 1.0.0"}
+      {:gen_stage, "~> 1.0.0"},
+      {:brink, "0.1.3", path: "../../brink/brink"}
     ]
   end
 end

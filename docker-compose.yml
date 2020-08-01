@@ -17,12 +17,14 @@ services:
     environment:
       PORT: 4000
       APEX_BROADCAST_HOST: apex_broadcast
+      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@redis:6379"
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
     networks:
       - apex_net
     depends_on:
       - apex_broadcast
+      - redis
 
   apex_broadcast:
     image: "bgottlob/apex_broadcast:latest"

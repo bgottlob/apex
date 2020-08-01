@@ -10,6 +10,7 @@ services:
     environment:
       MIX_ENV: prod
       APEX_BROADCAST_HOST: tasks.apex_broadcast
+      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@tasks.apex_redis:6379"
     deploy:
       replicas: 1
       restart_policy:
