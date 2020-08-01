@@ -11,6 +11,8 @@ defmodule ApexDashWeb.DashboardLive do
 
   def render(assigns) do
     ~L"""
+    <h1>Pace: <%= @pace %></h1>
+    <br>
     <h1>Gear: <%= @gear %></h1>
     <br>
     <h2>Speed: <%= @speed %> km/h</h2>
@@ -32,6 +34,7 @@ defmodule ApexDashWeb.DashboardLive do
 
     {:ok,
       socket
+      |> assign(:pace, "Loading...")
       |> assign(:rpm, "Loading...")
       |> assign(:speed, "Loading...")
       |> assign(:gear, "Loading...")
@@ -48,6 +51,10 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:gear, telemetry.gear)
       |> assign(:rev_lights_percent, telemetry.rev_lights_percent)
     }
+  end
+
+  def handle_info(%PaceUpdate{} = pace_update, socket) do
+    {:noreply, assign(socket, :pace, pace_update.value)}
   end
 
   def handle_info(_, socket) do

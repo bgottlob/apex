@@ -14,7 +14,14 @@ defmodule ApexDash.Application do
       # worker(ApexDash.Worker, [arg1, arg2, arg3]),
       {Phoenix.PubSub, [name: ApexDash.PubSub, adapter: Phoenix.PubSub.PG2]},
       # Start a registry that LiveView processes will register with for updates
-      {Registry, keys: :duplicate, name: Registry.LiveDispatcher}
+      {Registry, keys: :duplicate, name: Registry.LiveDispatcher},
+      {Brink.Consumer, [
+        redis_uri: System.get_env("APEX_REDIS_URI"),
+        stream: "pace",
+        name: PaceBrinkConsumer,
+        initial_block_timeout: 500
+      ]},
+      {ApexDash.PaceConsumer, []}
     ]
 
     conn = Apex.Node.connect(
