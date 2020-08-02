@@ -1,3 +1,68 @@
 <div class="jumbotron">
   <%= live_render(@conn, ApexDashWeb.DashboardLive) %>
 </div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+  function update_chart(id) {
+    var data = JSON.parse(d3.select("#" + id).attr("data-chart"))
+    const margin = ({top: 20, right: 30, bottom: 30, left: 40})
+
+    var svg = d3.select("#" + id).select("svg")
+    var width = svg.attr("width") - margin.right
+    var height = svg.attr("height") - margin.top
+
+    x = d3.scaleLinear()
+      .domain([data.min_domain, data.max_domain])
+      .range([margin.left, width - margin.right])
+
+    y = d3.scaleLinear()
+      .domain([data.min_range, data.max_range]).nice()
+      .range([height - margin.bottom, margin.top])
+
+    xAxis = g => g
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+
+    yAxis = g => g
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y))
+      .call(g => g.select(".domain").remove())
+      .call(g => g.select(".tick:last-of-type text").clone()
+        .attr("x", 3)
+        .attr("text-anchor", "start")
+        .attr("font-weight", "bold")
+        .text(data.y))
+
+    svg.append("g")
+      .call(xAxis);
+
+    svg.append("g")
+      .call(yAxis);
+
+    line = d3.line()
+      .defined(d => !isNaN(d))
+      .x((d, i) => x(i % 200))
+      .y(d => y(d))
+
+    path = svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke-width", 2.5)
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .selectAll("path")
+      .data(data.series)
+      .join("path")
+      .style("mix-blend-mode", "multiply")
+      .attr("d", d => line(d.values.reverse()))
+      .attr("stroke", d => d.color || "steelblue")
+  }
+
+  var observer = new MutationObserver(function(mutations, observer) {
+    update_chart('throttle');
+  });
+
+  observer.observe(document.getElementById('throttle'), {
+    attributes: true
+  });
+</script>
