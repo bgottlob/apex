@@ -9,6 +9,8 @@ end
 defmodule ApexDashWeb.DashboardLive do
   use Phoenix.LiveView
 
+  alias ApexDash.{ChartData, Series}
+
   def render(assigns) do
     ~L"""
     <h1>Pace: <%= @pace %></h1>
@@ -20,6 +22,10 @@ defmodule ApexDashWeb.DashboardLive do
     <h2>RPM: <%= @rpm %> rpm</h2>
     <br>
     <h3><%= @rev_lights_percent %> %</h3>
+
+    <div id="throttle" data-chart="<%= Jason.encode!(@throttle_data)%>">
+      <svg width="600" height="300"></svg>
+    </div>
     """
   end
 
@@ -32,6 +38,18 @@ defmodule ApexDashWeb.DashboardLive do
       nil
     )
 
+    throttle_data = %ChartData{
+      length: 0,
+      min_domain: 0,
+      max_domain: 200,
+      min_range: 0.0,
+      max_range: 1.0,
+      series: %{
+        brake: %Series{color: "red", values: []},
+        throttle: %Series{color: "steelblue", values: []}
+      }
+    }
+
     {:ok,
       socket
       |> assign(:pace, "Loading...")
@@ -39,17 +57,23 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:speed, "Loading...")
       |> assign(:gear, "Loading...")
       |> assign(:rev_lights_percent, "Loading...")
+      |> assign(:throttle_data, throttle_data)
     }
   end
 
   def handle_info(%F1.CarTelemetryPacket{car_telemetry_data: telemetry}, socket) do
     telemetry = elem(telemetry, 0)
+    throttle_data = socket.assigns.throttle_data
+                    |> ChartData.add_entry(:brake, telemetry.brake)
+                    |> ChartData.add_entry(:throttle, telemetry.throttle)
+                    |> ChartData.increment
     {:noreply,
       socket
       |> assign(:rpm, telemetry.engine_rpm)
       |> assign(:speed, telemetry.speed)
       |> assign(:gear, telemetry.gear)
       |> assign(:rev_lights_percent, telemetry.rev_lights_percent)
+      |> assign(:throttle_data, throttle_data)
     }
   end
 
