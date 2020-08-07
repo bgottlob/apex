@@ -30,6 +30,21 @@ defmodule ApexDash.LiveDispatcher do
         end
       end
     )
+
+    Registry.dispatch(
+      Registry.LiveDispatcher,
+      ApexDashWeb.TyreWearChart,
+      fn reg_entries ->
+        for {pid, _value} <- reg_entries do
+          for e <- events do 
+            case e do
+              x = %F1.CarStatusPacket{} -> send(pid, x)
+              _ -> nil # noop
+            end
+          end
+        end
+      end
+    )
     {:noreply, [], nil}
   end
 end

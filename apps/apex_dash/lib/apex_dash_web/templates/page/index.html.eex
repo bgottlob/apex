@@ -1,5 +1,6 @@
 <div class="jumbotron">
   <%= live_render(@conn, ApexDashWeb.DashboardLive) %>
+  <%= live_render(@conn, ApexDashWeb.TyreWearChart) %>
 </div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -58,11 +59,13 @@
       .attr("stroke", d => d.color || "steelblue")
   }
 
-  var observer = new MutationObserver(function(mutations, observer) {
+  // Update the throttle/brake chart whenever data changes
+  new MutationObserver(function(mutations, observer) {
     update_chart('throttle');
-  });
+  }).observe(document.getElementById('throttle'), {attributes: true})
 
-  observer.observe(document.getElementById('throttle'), {
-    attributes: true
-  });
+  // Update the tyre wear chart whenever data changes
+  new MutationObserver(function(mutations, observer) {
+    update_chart('tyre_wear');
+  }).observe(document.getElementById('tyre_wear'), {attributes: true})
 </script>

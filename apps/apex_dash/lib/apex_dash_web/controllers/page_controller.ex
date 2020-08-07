@@ -96,3 +96,56 @@ defmodule ApexDashWeb.DashboardLive do
     }
   end
 end
+
+defmodule ApexDashWeb.TyreWearChart do
+  use Phoenix.LiveView
+
+  alias ApexDash.{ChartData, Series}
+
+  def render(assigns) do
+    ~L"""
+    <div id="tyre_wear" data-chart="<%= Jason.encode!(@tyre_wear_data)%>">
+      <svg width="600" height="300"></svg>
+    </div>
+    """
+  end
+
+  def mount(_params, _session, socket) do
+    # Register to receive updates from ApexDash.LiveDispatcher process
+    {:ok, _} = Registry.register(
+      Registry.LiveDispatcher,
+      __MODULE__,
+      # In the future this value could correspond to the car index to focus on
+      nil
+    )
+
+    tyre_wear_data = %ChartData{
+      length: 0,
+      min_domain: 0,
+      max_domain: 200,
+      min_range: 0,
+      max_range: 10,
+      series: %{
+        rear_left: %Series{color: "orange", values: []},
+        rear_right: %Series{color: "red", values: []},
+        front_left: %Series{color: "blue", values: []},
+        front_right: %Series{color: "green", values: []}
+      }
+    }
+
+    {:ok, assign(socket, :tyre_wear_data, tyre_wear_data)}
+  end
+
+  def handle_info(%F1.CarStatusPacket{car_statuses: statuses}, socket) do
+    status = elem(statuses, 0)
+    {rl, rr, fl, fr} = status.tyres_wear
+    tyre_wear_data = socket.assigns.tyre_wear_data
+                |> ChartData.add_entry(:rear_left, rl)
+                |> ChartData.add_entry(:rear_right, rr)
+                |> ChartData.add_entry(:front_left, fl)
+                |> ChartData.add_entry(:front_right, fr)
+                |> ChartData.increment
+
+    {:noreply, assign(socket, :tyre_wear_data, tyre_wear_data)}
+  end
+end
