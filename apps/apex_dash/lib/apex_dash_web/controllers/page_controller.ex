@@ -61,8 +61,8 @@ defmodule ApexDashWeb.DashboardLive do
     }
   end
 
-  def handle_info(%F1.CarTelemetryPacket{car_telemetry_data: telemetry}, socket) do
-    telemetry = elem(telemetry, 0)
+  def handle_info(%F1.CarTelemetryPacket{header: header, car_telemetry_data: telemetry}, socket) do
+    telemetry = elem(telemetry, header.player_car_index)
     throttle_data = socket.assigns.throttle_data
                     |> ChartData.add_entry(:brake, telemetry.brake)
                     |> ChartData.add_entry(:throttle, telemetry.throttle)
@@ -136,8 +136,8 @@ defmodule ApexDashWeb.TyreWearChart do
     {:ok, assign(socket, :tyre_wear_data, tyre_wear_data)}
   end
 
-  def handle_info(%F1.CarStatusPacket{car_statuses: statuses}, socket) do
-    status = elem(statuses, 0)
+  def handle_info(%F1.CarStatusPacket{header: header, car_statuses: statuses}, socket) do
+    status = elem(statuses, header.player_car_index)
     {rl, rr, fl, fr} = status.tyres_wear
     tyre_wear_data = socket.assigns.tyre_wear_data
                 |> ChartData.add_entry(:rear_left, rl)
