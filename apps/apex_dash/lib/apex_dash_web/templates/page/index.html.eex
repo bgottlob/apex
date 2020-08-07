@@ -43,7 +43,7 @@
 
     line = d3.line()
       .defined(d => !isNaN(d))
-      .x((d, i) => x(i % 200))
+      .x((d, i) => x(i % data.max_domain))
       .y(d => y(d))
 
     path = svg.append("g")
