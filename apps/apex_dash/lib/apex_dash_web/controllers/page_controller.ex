@@ -58,11 +58,23 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:gear, "Loading...")
       |> assign(:rev_lights_percent, "Loading...")
       |> assign(:throttle_data, throttle_data)
+      |> assign(:car_index, nil)
     }
   end
 
+  # Preprocessing on the first packet that comes in
+  # If the car index has not been set yet, set it, then process packet normally
+  def handle_info(%{header: %F1.PacketHeader{player_car_index: i}} = event,
+                  %{assigns: %{car_index: nil}} = socket) do
+    i = cond do
+      i < 0 || i > 19 -> 0
+      true -> i
+    end
+    handle_info(event, assign(socket, :car_index, i))
+  end
+
   def handle_info(%F1.CarTelemetryPacket{header: header, car_telemetry_data: telemetry}, socket) do
-    telemetry = elem(telemetry, header.player_car_index)
+    telemetry = elem(telemetry, socket.assigns.car_index)
     throttle_data = socket.assigns.throttle_data
                     |> ChartData.add_entry(:brake, telemetry.brake)
                     |> ChartData.add_entry(:throttle, telemetry.throttle)
@@ -77,8 +89,9 @@ defmodule ApexDashWeb.DashboardLive do
     }
   end
 
-  def handle_info(%PaceUpdate{} = pace_update, socket) do
-    {:noreply, assign(socket, :pace, pace_update.value)}
+  def handle_info(%PaceUpdate{pace: pace, car_index: i},
+                  %{assigns: %{car_index: i}} = socket) do
+    {:noreply, assign(socket, :pace, pace)}
   end
 
   def handle_info(_, socket) do
@@ -133,11 +146,26 @@ defmodule ApexDashWeb.TyreWearChart do
       }
     }
 
-    {:ok, assign(socket, :tyre_wear_data, tyre_wear_data)}
+    {:ok,
+      socket
+      |> assign(:tyre_wear_data, tyre_wear_data)
+      |> assign(:car_index, nil)
+    }
+  end
+
+  # Preprocessing on the first packet that comes in
+  # If the car index has not been set yet, set it, then process packet normally
+  def handle_info(%{header: %F1.PacketHeader{player_car_index: i}} = event,
+                  %{assigns: %{car_index: nil}} = socket) do
+    i = cond do
+      i < 0 || i > 19 -> 0
+      true -> i
+    end
+    handle_info(event, assign(socket, :car_index, i))
   end
 
   def handle_info(%F1.CarStatusPacket{header: header, car_statuses: statuses}, socket) do
-    status = elem(statuses, header.player_car_index)
+    status = elem(statuses, socket.assigns.car_index)
     {rl, rr, fl, fr} = status.tyres_wear
     tyre_wear_data = socket.assigns.tyre_wear_data
                 |> ChartData.add_entry(:rear_left, rl)
