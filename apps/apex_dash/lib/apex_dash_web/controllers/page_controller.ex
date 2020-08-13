@@ -6,6 +6,24 @@ defmodule ApexDashWeb.PageController do
   end
 end
 
+defmodule ApexDashWeb.RootLive do
+  use Phoenix.LiveView
+  use Phoenix.HTML
+
+  def render(assigns) do
+    ~L"""
+    <%= f = form_for(:car_index, "#",
+                     [phx_change: :select_car, phx_target: "#dashboard, #tyre-wear"]) %>
+      <label>Select car:</label>
+      <%= select(f, :car_index, Enum.map(0..19, &({&1, &1}))) %>
+    </form>
+
+    <%= live_render(@socket, ApexDashWeb.DashboardLive, id: "dashboard") %>
+    <%= live_render(@socket, ApexDashWeb.TyreWearChart, id: "tyre-wear") %>
+    """
+  end
+end
+
 defmodule ApexDashWeb.DashboardLive do
   use Phoenix.LiveView
 
@@ -13,6 +31,7 @@ defmodule ApexDashWeb.DashboardLive do
 
   def render(assigns) do
     ~L"""
+    <h3>Selected car: <%= @car_index %></h3>
     <h1>Pace: <%= @pace %></h1>
     <br>
     <h1>Gear: <%= @gear %></h1>
@@ -60,6 +79,10 @@ defmodule ApexDashWeb.DashboardLive do
       |> assign(:throttle_data, throttle_data)
       |> assign(:car_index, nil)
     }
+  end
+
+  def handle_event("select_car", %{"car_index" => %{"car_index" => i}}, socket) do
+    {:noreply, assign(socket, :car_index, String.to_integer(i))}
   end
 
   # Preprocessing on the first packet that comes in
@@ -175,5 +198,9 @@ defmodule ApexDashWeb.TyreWearChart do
                 |> ChartData.increment
 
     {:noreply, assign(socket, :tyre_wear_data, tyre_wear_data)}
+  end
+
+  def handle_event("select_car", %{"car_index" => %{"car_index" => i}}, socket) do
+    {:noreply, assign(socket, :car_index, String.to_integer(i))}
   end
 end
