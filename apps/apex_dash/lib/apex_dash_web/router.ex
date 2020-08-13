@@ -18,7 +18,8 @@ defmodule ApexDashWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    live "/live", DashboardLive
+    live "/live", RootLive
+    post "/switchCar", PageController, :switch_car
   end
 
   # Other scopes may use custom stacks.
