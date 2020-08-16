@@ -31,6 +31,8 @@ defmodule ApexDash.LiveDispatcher do
       end
     )
 
+    # Send TyreWearChart processes only car status packets with tyre wear
+    # data
     Registry.dispatch(
       Registry.LiveDispatcher,
       ApexDashWeb.TyreWearChart,

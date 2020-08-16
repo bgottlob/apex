@@ -22,7 +22,7 @@ defmodule ApexRedisStreamer.LapDataStreamer do
         car_index: idx,
         current_lap_num: lap_data.current_lap_num,
         last_lap_time: lap_data.last_lap_time
-      } |> IO.inspect
+      }
     end)
   end
 end

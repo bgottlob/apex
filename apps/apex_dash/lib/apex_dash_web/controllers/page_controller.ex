@@ -43,6 +43,7 @@ defmodule ApexDashWeb.DashboardLive do
     <br>
     <h3><%= @rev_lights_percent %> %</h3>
 
+    <h3>Brake/Throttle</h3>
     <div id="throttle" data-chart="<%= Jason.encode!(@throttle_data)%>">
       <svg width="600" height="300"></svg>
     </div>
@@ -141,6 +142,7 @@ defmodule ApexDashWeb.TyreWearChart do
 
   def render(assigns) do
     ~L"""
+    <h3>Tyre Wear</h3>
     <div id="tyre_wear" data-chart="<%= Jason.encode!(@tyre_wear_data)%>">
       <svg width="600" height="300"></svg>
     </div>
@@ -163,10 +165,10 @@ defmodule ApexDashWeb.TyreWearChart do
       min_range: 0,
       max_range: 10,
       series: %{
-        rear_left: %Series{color: "orange", values: []},
+        rear_left: %Series{color: "red", values: []},
         rear_right: %Series{color: "red", values: []},
         front_left: %Series{color: "blue", values: []},
-        front_right: %Series{color: "green", values: []}
+        front_right: %Series{color: "blue", values: []}
       }
     }
 
