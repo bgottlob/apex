@@ -45,6 +45,24 @@ defmodule ApexDash.LiveDispatcher do
         end
       end
     )
+
+    # Send the position tracker only lap data packets, which contain the race
+    # position of each car
+    Registry.dispatch(
+      Registry.LiveDispatcher,
+      ApexDashWeb.RacePositionLive,
+      fn reg_entries ->
+        for {pid, _value} <- reg_entries do
+          for e <- events do 
+            case e do 
+              x = %F1.LapDataPacket{} -> send(pid, x)
+              _ -> nil # noop
+            end
+          end
+        end
+      end
+    )
+
     {:noreply, [], nil}
   end
 end
