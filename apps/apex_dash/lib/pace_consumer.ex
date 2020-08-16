@@ -24,6 +24,16 @@ defmodule ApexDash.PaceConsumer do
         end
       end
     )
+
+    Registry.dispatch(
+      Registry.LiveDispatcher,
+      ApexDashWeb.RacePositionLive,
+      fn reg_entries ->
+        for {pid, _value} <- reg_entries do
+          for e <- events, do: send(pid, e)
+        end
+      end
+    )
     {:noreply, [], nil}
   end
 end

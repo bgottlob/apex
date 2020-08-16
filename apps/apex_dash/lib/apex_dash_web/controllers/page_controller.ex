@@ -18,6 +18,7 @@ defmodule ApexDashWeb.RootLive do
       <%= select(f, :car_index, Enum.map(0..19, &({&1, &1}))) %>
     </form>
 
+    <%= live_render(@socket, ApexDashWeb.RacePositionLive, id: "race-position") %>
     <%= live_render(@socket, ApexDashWeb.DashboardLive, id: "dashboard") %>
     <%= live_render(@socket, ApexDashWeb.TyreWearChart, id: "tyre-wear") %>
     """
@@ -201,6 +202,126 @@ defmodule ApexDashWeb.TyreWearChart do
   end
 
   def handle_event("select_car", %{"car_index" => %{"car_index" => i}}, socket) do
-    {:noreply, assign(socket, :car_index, String.to_integer(i))}
+    {:noreply,
+      socket
+      |> assign(:car_index, String.to_integer(i))
+      |> assign(:pace, "Waiting to complete a lap...")
+    }
+  end
+end
+
+# %RacePosition{
+#   car_index:  11,
+#   position: 2,
+#   pace: 91.35,
+#   current_lap_num: 4,
+#   is_player_car: true
+# }
+defmodule ApexDashWeb.RacePosition do
+  defstruct [:car_index, :car_position, :pace, :current_lap_num, :is_player_car, :pace_diff]
+end
+
+defmodule ApexDashWeb.PaceDiff do
+  defstruct [:ahead, :behind]
+end
+
+defmodule ApexDashWeb.RacePositionLive do
+  use Phoenix.LiveView
+
+  alias ApexDashWeb.{PaceDiff, RacePosition}
+
+  def render(assigns) do
+    ~L"""
+    <ol>
+    <%= for p <- @positions do %>
+      <li>
+      <%= if p.is_player_car do %>
+        <strong>Car #<%= p.car_index %></strong>
+      <% else %>
+        Car #<%= p.car_index %>
+      <% end %>
+      : <%= p.pace %>
+      </li>
+    <% end %>
+    </ol>
+    """
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok, _} = Registry.register(
+      Registry.LiveDispatcher,
+      __MODULE__,
+      nil
+    )
+    {:ok,
+      socket
+      |> assign(:positions, [])
+      |> assign(:pace_by_car_index, List.to_tuple(for _ <- 0..19, do: 0.0))
+    }
+  end
+
+  def handle_info(
+    %F1.LapDataPacket{header: %{player_car_index: player_car_index},
+                      lap_data: lap_data},
+    socket
+  ) do
+    positions = Tuple.to_list(lap_data)
+                # Remove cars not in the race
+                |> Stream.filter(fn %F1.LapData{car_position: p} -> p > 0 end)
+                |> Stream.with_index(0)
+                |> Stream.map(fn {d, i} ->
+                  %RacePosition{ car_index: i,
+                     car_position: d.car_position,
+                     pace: elem(socket.assigns.pace_by_car_index, i),
+                     current_lap_num: d.current_lap_num,
+                     is_player_car: player_car_index == i,
+                     pace_diff: %PaceDiff{ ahead: 0.0, behind: 0.0 }
+                  }
+                end)
+                |> Enum.sort_by(&(&1.car_position), :asc)
+                |> add_pace_diffs()
+    {:noreply, assign(socket, :positions, positions)}
+  end
+
+  def handle_info(%PaceUpdate{pace: pace, car_index: i}, socket) do
+    {:noreply, assign(socket, :pace_by_car_index, put_elem(socket.assigns.pace_by_car_index, i, pace))}
+  end
+
+  defp add_pace_diffs(positions) do
+    add_pace_diffs(positions, nil, [])
+  end
+
+  defp add_pace_diffs([], _ahead, acc), do: Enum.reverse(acc)
+
+  defp add_pace_diffs([curr, behind | rest], nil, acc) do
+    curr = Map.put(curr, :pace_diff, pace_diff(curr, nil, behind))
+    add_pace_diffs([behind | rest], curr, [curr | acc])
+  end
+
+  defp add_pace_diffs([curr, behind | rest], ahead, acc) do
+    curr = Map.put(curr, :pace_diff, pace_diff(curr, ahead, behind))
+    add_pace_diffs([behind | rest], curr, [curr | acc])
+  end
+
+  defp add_pace_diffs([curr], ahead, acc) do
+    curr = Map.put(curr, :pace_diff, pace_diff(curr, ahead, nil))
+    add_pace_diffs([], curr, [curr | acc])
+  end
+
+  defp pace_diff(curr, ahead, behind) do
+    diff = %PaceDiff{}
+    if ahead do
+      diff = %{ diff | ahead: curr.pace - ahead.pace }
+    else
+      diff = %{ diff | ahead: 0.0 }
+    end
+
+    if behind do
+      diff = %{ diff | behind: curr.pace - behind.pace }
+    else
+      diff = %{ diff | behind: 0.0 }
+    end
+
+    diff
   end
 end
