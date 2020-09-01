@@ -26,7 +26,8 @@ defmodule Apex.MixProject do
     [
       {:flow, "1.0.0"},
       {:gen_stage, "1.0.0"},
-      {:jason, "1.2.1"}
+      {:jason, "1.2.1"},
+      {:propcheck, "1.2.1", only: [:test, :dev]}
     ]
   end
 
