@@ -1,4 +1,8 @@
 defmodule F1.EventPacket do
+  @moduledoc """
+  A struct representing data for various types of events.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -8,7 +12,7 @@ defmodule F1.EventPacket do
     :event_details
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {struct, data} = {%__MODULE__{header: header}, data}
                      |> uint8(:event_string_code, 4)
 
@@ -32,6 +36,10 @@ defmodule F1.EventPacket do
 end
 
 defmodule F1.Event.SessionStarted do
+  @moduledoc """
+  A struct representing session started events.
+  """
+
   @derive Jason.Encoder
   defstruct []
 
@@ -41,6 +49,10 @@ defmodule F1.Event.SessionStarted do
 end
 
 defmodule F1.Event.SessionEnded do
+  @moduledoc """
+  A struct representing session ended events.
+  """
+
   @derive Jason.Encoder
   defstruct []
 
@@ -50,6 +62,10 @@ defmodule F1.Event.SessionEnded do
 end
 
 defmodule F1.Event.DRSEnabled do
+  @moduledoc """
+  A struct representing DRS enabled events.
+  """
+
   @derive Jason.Encoder
   defstruct []
 
@@ -59,6 +75,10 @@ defmodule F1.Event.DRSEnabled do
 end
 
 defmodule F1.Event.DRSDisabled do
+  @moduledoc """
+  A struct representing DRS disabled events.
+  """
+
   @derive Jason.Encoder
   defstruct []
 
@@ -68,6 +88,10 @@ defmodule F1.Event.DRSDisabled do
 end
 
 defmodule F1.Event.ChequeredFlag do
+  @moduledoc """
+  A struct representing chequered flag events.
+  """
+
   @derive Jason.Encoder
   defstruct []
 
@@ -77,6 +101,10 @@ defmodule F1.Event.ChequeredFlag do
 end
 
 defmodule F1.Event.FastestLap do
+  @moduledoc """
+  A struct representing fastest lap events.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -93,6 +121,10 @@ defmodule F1.Event.FastestLap do
 end
 
 defmodule F1.Event.Retirement do
+  @moduledoc """
+  A struct representing retirement events.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -105,6 +137,10 @@ defmodule F1.Event.Retirement do
 end
 
 defmodule F1.Event.TeamMateInPits do
+  @moduledoc """
+  A struct representing team mate in pits events.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -117,6 +153,10 @@ defmodule F1.Event.TeamMateInPits do
 end
 
 defmodule F1.Event.RaceWinner do
+  @moduledoc """
+  A struct representing race winner events.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

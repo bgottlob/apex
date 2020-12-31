@@ -1,17 +1,25 @@
 defmodule F1.CarStatusPacket do
+  @moduledoc """
+  A struct representing instantaneous status data for all cars on track.
+  """
+
   @derive Jason.Encoder
   defstruct [
     :header,
     :car_statuses
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {data_tuple, _} = F1.Parser.parse_tuple(data, F1.CarStatus, 20)
     %__MODULE__{header: header, car_statuses: data_tuple}
   end
 end
 
 defmodule F1.CarStatus do
+  @moduledoc """
+  A struct representing instantaneous status data for a single car.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

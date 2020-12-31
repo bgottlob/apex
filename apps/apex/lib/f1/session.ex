@@ -1,4 +1,8 @@
 defmodule F1.SessionPacket do
+  @moduledoc """
+  A struct representing session data.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -25,7 +29,7 @@ defmodule F1.SessionPacket do
     :network_game
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {struct, data} = {%__MODULE__{header: header}, data}
                      |> uint8(:weather)
                      |> int8(:track_temperature)
@@ -55,6 +59,10 @@ defmodule F1.SessionPacket do
 end
 
 defmodule F1.MarshalZone do
+  @moduledoc """
+  A struct representing a marshal zone.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

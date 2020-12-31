@@ -7,6 +7,11 @@ defimpl Jason.Encoder, for: Tuple do
 end
 
 defmodule Apex.RedisStreamSerialize do
+  @moduledoc """
+  Provides a function for transforming a packet into a map to be passed to a
+  Redis stream.
+  """
+
   def to_redis_stream_map(packet) do
     %{
       type: Atom.to_string(packet.__struct__) |> String.trim_leading("Elixir."),

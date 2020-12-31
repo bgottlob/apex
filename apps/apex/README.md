@@ -28,7 +28,8 @@ To capture UDP packets into a file, use the following command:
 * `--dport`: UDP port the packets to be captured are sent to
 * `--file`: Path to file the packet data will be saved in
 
-To stream UDP packets from a file, use the following command:
+To stream UDP packets from a file,
+use the following command:
 ```
 ./apex --sport <src_udp_port> \
        --daddr <dest_ip_address> --dport <dest_udp_port> \

@@ -1,4 +1,9 @@
 defmodule ApexNeo4jAdapter.Application do
+  @moduledoc """
+  An application that consumes data from an Apex Broadcast process then
+  serializes it and streams it to a Neo4j database.
+  """
+
   def start(_type, _args) do
     conn = Apex.Node.connect(
       :apex_broadcast,

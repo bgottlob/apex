@@ -18,7 +18,7 @@ defmodule ApexBroadcast.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {ApexBroadcast.Application, [20777]},
+      mod: {ApexBroadcast.Application, [20_777]},
       extra_applications: [:logger]
     ]
   end

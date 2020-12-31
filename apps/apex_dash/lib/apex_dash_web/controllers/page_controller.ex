@@ -91,10 +91,7 @@ defmodule ApexDashWeb.DashboardLive do
   # If the car index has not been set yet, set it, then process packet normally
   def handle_info(%{header: %F1.PacketHeader{player_car_index: i}} = event,
                   %{assigns: %{car_index: nil}} = socket) do
-    i = cond do
-      i < 0 || i > 19 -> 0
-      true -> i
-    end
+    if i < 0 || i > 19, do: i = 0
     handle_info(event, assign(socket, :car_index, i))
   end
 
@@ -183,10 +180,7 @@ defmodule ApexDashWeb.TyreWearChart do
   # If the car index has not been set yet, set it, then process packet normally
   def handle_info(%{header: %F1.PacketHeader{player_car_index: i}} = event,
                   %{assigns: %{car_index: nil}} = socket) do
-    i = cond do
-      i < 0 || i > 19 -> 0
-      true -> i
-    end
+    if i < 0 || i > 19, do: i = 0
     handle_info(event, assign(socket, :car_index, i))
   end
 
@@ -272,12 +266,12 @@ defmodule ApexDashWeb.RacePositionLive do
                 |> Stream.filter(fn %F1.LapData{car_position: p} -> p > 0 end)
                 |> Stream.with_index(0)
                 |> Stream.map(fn {d, i} ->
-                  %RacePosition{ car_index: i,
+                  %RacePosition{car_index: i,
                      car_position: d.car_position,
                      pace: elem(socket.assigns.pace_by_car_index, i),
                      current_lap_num: d.current_lap_num,
                      is_player_car: player_car_index == i,
-                     pace_diff: %PaceDiff{ ahead: 0.0, behind: 0.0 }
+                     pace_diff: %PaceDiff{ahead: 0.0, behind: 0.0}
                   }
                 end)
                 |> Enum.sort_by(&(&1.car_position), :asc)
@@ -313,15 +307,15 @@ defmodule ApexDashWeb.RacePositionLive do
   defp pace_diff(curr, ahead, behind) do
     diff = %PaceDiff{}
     if ahead do
-      diff = %{ diff | ahead: curr.pace - ahead.pace }
+      diff = %{diff | ahead: curr.pace - ahead.pace}
     else
-      diff = %{ diff | ahead: 0.0 }
+      diff = %{diff | ahead: 0.0}
     end
 
     if behind do
-      diff = %{ diff | behind: curr.pace - behind.pace }
+      diff = %{diff | behind: curr.pace - behind.pace}
     else
-      diff = %{ diff | behind: 0.0 }
+      diff = %{diff | behind: 0.0}
     end
 
     diff

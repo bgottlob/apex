@@ -1,4 +1,9 @@
 defmodule ApexRedisStreamer.Application do
+  @moduledoc """
+  Application that consumes data from an Apex Broadcast process then serializes
+  and streams the data to Redis streams.
+  """
+
   def start(_type, []) do
     conn = Apex.Node.connect(
       :apex_broadcast,

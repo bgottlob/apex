@@ -1,4 +1,8 @@
 defmodule F1.DataTypes do
+  @moduledoc """
+  Provides functions for parsing primitive data types out of binaries.
+  """
+
   # Define macros for binary special forms that correspond to F1 data types
   # from https://forums.codemasters.com/topic/44592-f1-2019-udp-specification/
   %{

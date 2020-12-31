@@ -1,4 +1,8 @@
 defmodule F1.PacketHeader do
+  @moduledoc """
+  A struct for storing F1 packet header data.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

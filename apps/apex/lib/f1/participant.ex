@@ -1,4 +1,8 @@
 defmodule F1.ParticipantPacket do
+  @moduledoc """
+  A struct representing all participants in a session.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -8,7 +12,7 @@ defmodule F1.ParticipantPacket do
     :participants
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {struct, data} = {%__MODULE__{header: header}, data}
                      |> uint8(:num_active_cars)
     {participants, _} = F1.Parser.parse_tuple(data, F1.Participant, 20)
@@ -17,6 +21,10 @@ defmodule F1.ParticipantPacket do
 end
 
 defmodule F1.Participant do
+  @moduledoc """
+  A struct representing a single participant in a session.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

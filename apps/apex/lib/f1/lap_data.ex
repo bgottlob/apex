@@ -1,4 +1,8 @@
 defmodule F1.LapDataPacket do
+  @moduledoc """
+  A struct representing current lap data for all cars on track.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -7,13 +11,17 @@ defmodule F1.LapDataPacket do
     :lap_data
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {data_tuple, _} = F1.Parser.parse_tuple(data, F1.LapData, 20)
     %__MODULE__{header: header, lap_data: data_tuple}
   end
 end
 
 defmodule F1.LapData do
+  @moduledoc """
+  A struct representing current lap data single car.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

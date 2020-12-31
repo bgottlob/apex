@@ -1,4 +1,8 @@
 defmodule F1.CarMotionPacket do
+  @moduledoc """
+  A struct representing instantaneous motion data for all cars on track.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder
@@ -23,7 +27,7 @@ defmodule F1.CarMotionPacket do
     :front_wheels_angle
   ]
 
-  def from_binary(data, header = %F1.PacketHeader{}) do
+  def from_binary(data, %F1.PacketHeader{} = header) do
     {data_tuple, data} = F1.Parser.parse_tuple(data, F1.CarMotion, 20)
 
     {%__MODULE__{header: header, car_motion_data: data_tuple}, data}
@@ -47,6 +51,10 @@ defmodule F1.CarMotionPacket do
 end
 
 defmodule F1.CarMotion do
+  @moduledoc """
+  A struct representing instantaneous motion data for a single car.
+  """
+
   import F1.DataTypes
 
   @derive Jason.Encoder

@@ -1,4 +1,9 @@
 defmodule ApexDash.Application do
+  @moduledoc """
+  A Phoenix application that displays live telemetry data from racing
+  simulators.
+  """
+
   use Application
 
   # See https://hexdocs.pm/elixir/Application.html
@@ -36,7 +41,7 @@ defmodule ApexDash.Application do
         [{ApexDash.LiveDispatcher, []}]
       _ ->
         IO.puts "Unable to connect to Apex Broadcast node"
-        [%{id: Apex.Broadcaster, start: {Apex.Broadcaster, :start_link, [20777, [name: {:global, ApexBroadcast}]]}},
+        [%{id: Apex.Broadcaster, start: {Apex.Broadcaster, :start_link, [20_777, [name: {:global, ApexBroadcast}]]}},
           {ApexDash.LiveDispatcher, []}]
     end
 

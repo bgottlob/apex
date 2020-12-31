@@ -1,6 +1,6 @@
 defmodule ApexRedisStreamer.LapDataStreamer do
   @moduledoc """
-  Streams lap data for individual cars
+  Streams lap data for individual cars.
   """
 
   def start_link(brink_stage) do

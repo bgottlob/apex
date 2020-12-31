@@ -1,4 +1,8 @@
 defmodule ApexNeo4jAdapter.BoltStreamer do
+  @moduledoc """
+  A GenStage consumer of Apex structs that creates data in Neo4j.
+  """
+
   use GenStage
 
   def start_link(url) do
@@ -25,7 +29,7 @@ defmodule ApexNeo4jAdapter.BoltStreamer do
     {:noreply, [], conn}
   end
 
-  defp create_event_query(packet = %F1.SessionPacket{}) do
+  defp create_event_query(%F1.SessionPacket{} = packet) do
     """
     MERGE (s:Session { session_uid: '#{packet.header.session_uid}' })
     ON MATCH SET s += {
@@ -35,7 +39,7 @@ defmodule ApexNeo4jAdapter.BoltStreamer do
     """
   end
 
-  defp create_event_query(packet = %F1.CarTelemetryPacket{}) do
+  defp create_event_query(%F1.CarTelemetryPacket{} = packet) do
     telemetry = elem(packet.car_telemetry_data, 0)
     """
     CREATE (ct:CarTelemetry {

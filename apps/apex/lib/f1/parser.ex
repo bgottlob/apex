@@ -1,4 +1,8 @@
 defmodule F1.Parser do
+  @moduledoc """
+  Provides functions for parsing data packets emitted from the F1 games.
+  """
+
   def parse(data) do
     {header, data} = F1.PacketHeader.from_binary(data)
 

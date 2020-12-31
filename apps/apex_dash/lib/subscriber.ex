@@ -20,17 +20,19 @@ defmodule ApexDash.LiveDispatcher do
     end
   end
 
-  def handle_events(events, _from, nil) do
+  defp dispatch_dashboard(events) do
     Registry.dispatch(
       Registry.LiveDispatcher,
       ApexDashWeb.DashboardLive,
       fn reg_entries ->
         for {pid, _value} <- reg_entries do
-          for e <- events, do: send(pid, e)
-        end
+        for e <- events, do: send(pid, e)
+      end
       end
     )
+  end
 
+  defp dispatch_tyre_wear(events) do
     # Send TyreWearChart processes only car status packets with tyre wear
     # data
     Registry.dispatch(
@@ -47,7 +49,9 @@ defmodule ApexDash.LiveDispatcher do
         end
       end
     )
+  end
 
+  defp dispatch_race_position(events) do
     # Send the position tracker only lap data packets, which contain the race
     # position of each car
     Registry.dispatch(
@@ -64,7 +68,12 @@ defmodule ApexDash.LiveDispatcher do
         end
       end
     )
+  end
 
+  def handle_events(events, _from, nil) do
+    dispatch_dashboard(events)
+    dispatch_tyre_wear(events)
+    dispatch_race_position(events)
     {:noreply, [], nil}
   end
 end

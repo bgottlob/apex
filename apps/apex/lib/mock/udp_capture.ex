@@ -1,4 +1,9 @@
 defmodule Apex.Mock.UDPCapture do
+  @moduledoc """
+  A UDP listener that stores each packet received in a file as Base16-encoded
+  text.
+  """
+
   def start(dport, file) do
     IO.puts "Listening on UDP port #{dport} for packets to capture in file #{file}"
     {:ok, socket} = :gen_udp.open(dport, [:binary, active: true])

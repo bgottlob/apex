@@ -1,4 +1,9 @@
 defmodule Apex.Mock.UDPServer do
+  @moduledoc """
+  A UDP server that pushes binary data to a destination host and port; intended
+  for test purposes.
+  """
+
   def start(sport, daddr, dport, file) do
     IO.puts(
       """

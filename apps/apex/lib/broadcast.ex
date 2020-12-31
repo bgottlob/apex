@@ -1,4 +1,8 @@
 defmodule Apex.Broadcaster do
+  @moduledoc """
+  A GenStage producer that broadcasts racing simulator data as structs.
+  """
+
   use GenStage
 
   # Specify UDP port to listen for data on

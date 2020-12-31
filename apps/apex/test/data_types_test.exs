@@ -4,16 +4,16 @@ defmodule DataTypesTest do
 
   # https://www.h-schmidt.net/FloatConverter/IEEE754.html
   test "static examples of float32" do
-    <<a,b,c,d>> = <<0::1, 124::8, 2097152::23>>
-    {result, <<1,2,3>>} = F1.DataTypes.float32({%{}, <<d,c,b,a,1,2,3>>}, :result)
+    <<a, b, c, d>> = <<0::1, 124::8, 2_097_152::23>>
+    {result, <<1, 2, 3>>} = F1.DataTypes.float32({%{}, <<d, c, b, a, 1, 2, 3>>}, :result)
     assert result[:result] == 0.15625
 
-    <<a,b,c,d>> = <<1::1, 124::8, 2097152::23>>
-    {result, <<21>>} = F1.DataTypes.float32({%{}, <<d,c,b,a,21>>}, :result)
+    <<a, b, c, d>> = <<1::1, 124::8, 2_097_152::23>>
+    {result, <<21>>} = F1.DataTypes.float32({%{}, <<d, c, b, a, 21>>}, :result)
     assert result[:result] == -0.15625
 
-    <<a,b,c,d>> = <<0::1, 138::8, 3839686::23>>
-    {result, <<>>} = F1.DataTypes.float32({%{}, <<d,c,b,a>>}, :result)
+    <<a, b, c, d>> = <<0::1, 138::8, 3_839_686::23>>
+    {result, <<>>} = F1.DataTypes.float32({%{}, <<d, c, b, a>>}, :result)
     assert result[:result] == 2985.42333984375
   end
 
@@ -26,32 +26,32 @@ defmodule DataTypesTest do
   end
 
   test "static examples of uint16" do
-    <<a,b>> = <<2000::16>>
-    {result, <<200>>} = F1.DataTypes.uint16({%{}, <<b,a, 200::8>>}, :result)
+    <<a, b>> = <<2000::16>>
+    {result, <<200>>} = F1.DataTypes.uint16({%{}, <<b, a, 200::8>>}, :result)
     assert result[:result] == 2000
 
-    <<a,b>> = <<100::16>>
-    {result, <<>>} = F1.DataTypes.uint16({%{}, <<b,a>>}, :result)
+    <<a, b>> = <<100::16>>
+    {result, <<>>} = F1.DataTypes.uint16({%{}, <<b, a>>}, :result)
     assert result[:result] == 100
   end
 
   test "static examples of uint32" do
-    <<a,b,c,d>> = <<200000::32>>
-    {result, <<200>>} = F1.DataTypes.uint32({%{}, <<d,c,b,a, 200::8>>}, :result)
-    assert result[:result] == 200000
+    <<a, b, c, d>> = <<200_000::32>>
+    {result, <<200>>} = F1.DataTypes.uint32({%{}, <<d, c, b, a, 200::8>>}, :result)
+    assert result[:result] == 200_000
 
-    <<a,b,c,d>> = <<35::32>>
-    {result, <<>>} = F1.DataTypes.uint32({%{}, <<d,c,b,a>>}, :result)
+    <<a, b, c, d>> = <<35::32>>
+    {result, <<>>} = F1.DataTypes.uint32({%{}, <<d, c, b, a>>}, :result)
     assert result[:result] == 35
   end
 
   test "static examples of uint64" do
-    <<a,b,c,d,e,f,g,h>> = <<200000000::64>>
-    {result, <<200>>} = F1.DataTypes.uint64({%{}, <<h,g,f,e,d,c,b,a, 200::8>>}, :result)
-    assert result[:result] == 200000000
+    <<a, b, c, d, e, f, g, h>> = <<200_000_000::64>>
+    {result, <<200>>} = F1.DataTypes.uint64({%{}, <<h, g, f, e, d, c, b, a, 200::8>>}, :result)
+    assert result[:result] == 200_000_000
 
-    <<a,b,c,d,e,f,g,h>> = <<35::64>>
-    {result, <<>>} = F1.DataTypes.uint64({%{}, <<h,g,f,e,d,c,b,a>>}, :result)
+    <<a, b, c, d, e, f, g, h>> = <<35::64>>
+    {result, <<>>} = F1.DataTypes.uint64({%{}, <<h, g, f, e, d, c, b, a>>}, :result)
     assert result[:result] == 35
   end
 
@@ -64,12 +64,12 @@ defmodule DataTypesTest do
   end
 
   test "static examples of int16" do
-    <<a,b>> = <<1::1, 1000::15>>
-    {result, <<>>} = F1.DataTypes.int16({%{}, <<b,a>>}, :result)
-    assert result[:result] == -31768
+    <<a, b>> = <<1::1, 1000::15>>
+    {result, <<>>} = F1.DataTypes.int16({%{}, <<b, a>>}, :result)
+    assert result[:result] == -31_768
 
-    <<a,b>> = <<50::16>>
-    {result, <<200>>} = F1.DataTypes.int16({%{}, <<b,a, 200>>}, :result)
+    <<a, b>> = <<50::16>>
+    {result, <<200>>} = F1.DataTypes.int16({%{}, <<b, a, 200>>}, :result)
     assert result[:result] == 50
   end
 
@@ -81,19 +81,19 @@ defmodule DataTypesTest do
     {result, _rest} = F1.DataTypes.int8({%{}, <<0xFF::8>>}, :result)
     assert result[:result] == -1
 
-    <<a,b>> = <<0xFFFF::16>>
-    {result, _rest} = F1.DataTypes.uint16({%{}, <<b,a>>}, :result)
+    <<a, b>> = <<0xFFFF::16>>
+    {result, _rest} = F1.DataTypes.uint16({%{}, <<b, a>>}, :result)
     assert result[:result] == 0xFFFF
 
     # Two's complement!
-    <<a,b>> = <<0xFFFF::16>>
-    {result, _rest} = F1.DataTypes.int16({%{}, <<b,a>>}, :result)
+    <<a, b>> = <<0xFFFF::16>>
+    {result, _rest} = F1.DataTypes.int16({%{}, <<b, a>>}, :result)
     assert result[:result] == -1
   end
 
   def valid_little_float32?(b) do
-    <<a,b,c,d>> = b
-    <<_sign::integer-size(1), exp::integer-size(8), _mant::integer-size(23)>> = <<d,c,b,a>>
+    <<a, b, c, d>> = b
+    <<_sign::integer-size(1), exp::integer-size(8), _mant::integer-size(23)>> = <<d, c, b, a>>
     exp < 0xFF
   end
 
@@ -154,8 +154,8 @@ defmodule DataTypesTest do
   property "parsed float32 values are within acceptable range" do
     forall b <- float32_bitstring() do
       {r, _rest} = F1.DataTypes.float32({%{}, b}, :result)
-      r[:result] >= -340282346638528859811704183484516925440 &&
-        r[:result] <= 340282346638528859811704183484516925440
+      r[:result] >= -340_282_346_638_528_859_811_704_183_484_516_925_440 &&
+        r[:result] <= 340_282_346_638_528_859_811_704_183_484_516_925_440
     end
   end
 
@@ -169,21 +169,21 @@ defmodule DataTypesTest do
   property "parsed uint16 values are within acceptable range" do
     forall b <- bitstring(16) do
       {r, _rest} = F1.DataTypes.uint16({%{}, b}, :result)
-      r[:result] >= 0 && r[:result] <= 65535
+      r[:result] >= 0 && r[:result] <= 65_535
     end
   end
 
   property "parsed uint32 values are within acceptable range" do
     forall b <- bitstring(32) do
       {r, _rest} = F1.DataTypes.uint32({%{}, b}, :result)
-      r[:result] >= 0 && r[:result] <= 4294967295
+      r[:result] >= 0 && r[:result] <= 4_294_967_295
     end
   end
 
   property "parsed uint64 values are within acceptable range" do
     forall b <- bitstring(64) do
       {r, _rest} = F1.DataTypes.uint64({%{}, b}, :result)
-      r[:result] >= 0 && r[:result] <= 18446744073709551615
+      r[:result] >= 0 && r[:result] <= 18_446_744_073_709_551_615
     end
   end
 
@@ -197,7 +197,7 @@ defmodule DataTypesTest do
   property "parsed int16 values are within acceptable range" do
     forall b <- bitstring(16) do
       {r, _rest} = F1.DataTypes.int16({%{}, b}, :result)
-      r[:result] >= -32768 && r[:result] <= 32767
+      r[:result] >= -32_768 && r[:result] <= 32_767
     end
   end
 end

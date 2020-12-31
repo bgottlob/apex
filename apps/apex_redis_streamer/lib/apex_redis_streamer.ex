@@ -1,4 +1,8 @@
 defmodule ApexRedisStreamer do
+  @moduledoc """
+  A Flow that serializes Apex structs into Redis streams via a Brink stage.
+  """
+
   use Flow
 
   def start_link(brink_stage) do
