@@ -2,7 +2,6 @@ version: '3.8'
 
 volumes:
   apex_neo4j_data:
-  apex_redis_data:
 
 networks:
   apex_net:
@@ -17,14 +16,12 @@ services:
     environment:
       PORT: 4000
       APEX_BROADCAST_HOST: apex_broadcast
-      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@redis:6379"
       MIX_ENV: ${MIX_ENV}
       ERLANG_COOKIE: ${ERLANG_COOKIE}
     networks:
       - apex_net
     depends_on:
       - apex_broadcast
-      - redis
 
   apex_broadcast:
     image: "bgottlob/apex_broadcast:latest"
@@ -35,19 +32,6 @@ services:
       ERLANG_COOKIE: ${ERLANG_COOKIE}
     networks:
       - apex_net
-
-  apex_redis_streamer:
-    image: "bgottlob/apex_redis_streamer:latest"
-    environment:
-      APEX_BROADCAST_HOST: apex_broadcast
-      APEX_REDIS_URI: "redis://:${APEX_REDIS_PASSWORD}@redis:6379"
-      MIX_ENV: ${MIX_ENV}
-      ERLANG_COOKIE: ${ERLANG_COOKIE}
-    networks:
-      - apex_net
-    depends_on:
-      - apex_broadcast
-      - redis
 
   apex_neo4j_adapter:
     image: "bgottlob/apex_neo4j_adapter:latest"
@@ -63,16 +47,6 @@ services:
       - neo4j
 
   # Databases
-  redis:
-    image: "redis:6.0-alpine"
-    command: "redis-server --requirepass ${APEX_REDIS_PASSWORD}"
-    ports:
-      - "6379:6379"
-    volumes:
-      - "apex_redis_data:/data"
-    networks:
-      - apex_net
-
   neo4j:
     image: "neo4j:4.1"
     ports:
@@ -84,30 +58,3 @@ services:
       - "apex_neo4j_data:/data"
     networks:
       - apex_net
-
-  # Flink cluster
-  jobmanager:
-    image: flink:1.11-scala_2.12
-    ports:
-      - "8081:8081"
-    command: jobmanager
-    environment:
-      APEX_REDIS_HOST: redis
-      APEX_REDIS_PORT: 6379
-      APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
-      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
-    networks:
-      - apex_net
-
-  taskmanager:
-    image: flink:1.11-scala_2.12
-    command: taskmanager
-    environment:
-      APEX_REDIS_HOST: redis
-      APEX_REDIS_PORT: 6379
-      APEX_REDIS_PASSWORD: ${APEX_REDIS_PASSWORD}
-      FLINK_PROPERTIES: "jobmanager.rpc.address: jobmanager"
-    networks:
-      - apex_net
-    depends_on:
-      - jobmanager
