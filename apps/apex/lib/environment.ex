@@ -14,10 +14,7 @@ defmodule Apex.Node do
   end
 
   def connect(name, hostname) do
-    ip = case Mix.env() == :prod do
-      true -> look_up_ip(hostname)
-      _    -> Node.self |> to_string |> String.split("@") |> List.last
-    end
+    ip = Node.self |> to_string |> String.split("@") |> List.last
     Node.connect(:"#{name}@#{ip}")
   end
 end

@@ -24,21 +24,7 @@ defmodule ApexDash.Application do
       #{ApexDash.PaceConsumer, []}
     ]
 
-    conn = Apex.Node.connect(
-      :apex_broadcast,
-      System.get_env("APEX_BROADCAST_HOST")
-    )
-
-    stages = case conn do
-      true ->
-        IO.puts "Connected to distributed Apex Broadcast node"
-        :global.sync()
-        [{ApexDash.LiveDispatcher, []}]
-      _ ->
-        IO.puts "Unable to connect to Apex Broadcast node"
-        [%{id: Apex.Broadcaster, start: {Apex.Broadcaster, :start_link, [20_777, [name: {:global, ApexBroadcast}]]}},
-          {ApexDash.LiveDispatcher, []}]
-    end
+    stages = [{ApexDash.LiveDispatcher, []}]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

@@ -23,7 +23,7 @@ defmodule ApexDash.Mixfile do
   def application do
     [
       mod: {ApexDash.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:apex_broadcast, :logger, :runtime_tools]
     ]
   end
 

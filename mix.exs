@@ -6,7 +6,16 @@ defmodule ApexUmbrella.Mixfile do
       apps_path: "apps",
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: [
+        dash_only: [
+          include_executables_for: [:unix],
+          applications: [
+            apex_dash: :permanent,
+            runtime_tools: :permanent
+          ]
+        ]
+      ]
     ]
   end
 
@@ -18,7 +27,6 @@ defmodule ApexUmbrella.Mixfile do
   defp deps do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:distillery, "2.1.1"}
     ]
   end
 end
