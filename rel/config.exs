@@ -62,22 +62,6 @@ release :apex_dash do
   ]
 end
 
-release :apex_shift_bulb do
-  set version: current_version(:apex_shift_bulb)
-  set applications: [
-    :runtime_tools
-  ]
-end
-
-release :apex_redis_streamer do
-  set version: current_version(:apex_redis_streamer)
-  set applications: [
-    :apex_redis_streamer,
-    :mix,
-    :runtime_tools
-  ]
-end
-
 release :apex_neo4j_adapter do
   set version: current_version(:apex_neo4j_adapter)
   set applications: [
