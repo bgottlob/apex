@@ -200,4 +200,61 @@ defmodule DataTypesTest do
       r[:result] >= -32_768 && r[:result] <= 32_767
     end
   end
+
+  test "static example of float32 tuple" do
+    <<a, b, c, d>> = <<0::1, 124::8, 2_097_152::23>>
+    <<e, f, g, h>> = <<0::1, 138::8, 3_839_686::23>>
+    {result, <<1, 2, 3>>} = F1.DataTypes.float32(
+      {%{}, <<d,c,b,a, h,g,f,e, 1, 2, 3>>},
+      :result,
+      2
+    )
+    assert result[:result] == {0.15625, 2985.42333984375}
+  end
+
+  test "static example of uint8 tuple" do
+    {result, <<33>>} =
+      F1.DataTypes.uint8({%{}, <<13::8, 45::8, 33::8>>}, :result, 2)
+    assert result[:result] == {13, 45}
+  end
+
+  test "static example of uint16 tuple" do
+    <<a, b>> = <<2000::16>>
+    <<c, d>> = <<100::16>>
+    {result, <<200>>} = F1.DataTypes.uint16({%{}, <<b,a, d,c, 200::8>>}, :result, 2)
+    assert result[:result] == {2000, 100}
+  end
+
+  test "static example of uint32 tuple" do
+    <<a, b, c, d>> = <<200_000::32>>
+    <<e, f, g, h>> = <<35::32>>
+    {result, <<200>>} =
+      F1.DataTypes.uint32({%{}, <<d,c,b,a, h,g,f,e, 200::8>>}, :result, 2)
+    assert result[:result] == {200_000, 35}
+  end
+
+  test "static examples of uint64 tuple" do
+    <<a, b, c, d, e, f, g, h>> = <<200_000_000::64>>
+    <<i, j, k, l, m, n, o, p>> = <<35::64>>
+    {result, <<200>>} = F1.DataTypes.uint64(
+      {%{}, <<h,g,f,e,d,c,b,a, p,o,n,m,l,k,j,i, 200::8>>},
+      :result,
+      2
+    )
+    assert result[:result] == {200_000_000, 35}
+  end
+
+  test "static examples of int8 tuple" do
+    {result, <<200>>} =
+      F1.DataTypes.int8({%{}, <<1::1, 100::7, 50, 200>>}, :result, 2)
+    assert result[:result] == {-28, 50}
+  end
+
+  test "static examples of int16 tuple" do
+    <<a, b>> = <<1::1, 1000::15>>
+    <<c, d>> = <<50::16>>
+    {result, <<200>>} =
+      F1.DataTypes.int16({%{}, <<b,a, d,c, 200::16>>}, :result, 2)
+    assert result[:result] == {-31_768, 50}
+  end
 end
