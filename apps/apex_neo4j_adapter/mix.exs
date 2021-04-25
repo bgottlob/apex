@@ -17,7 +17,6 @@ defmodule ApexNeo4jAdapter.MixProject do
 
   def application do
     [
-      mod: {ApexNeo4jAdapter.Application, []},
       extra_applications: [:logger]
     ]
   end
